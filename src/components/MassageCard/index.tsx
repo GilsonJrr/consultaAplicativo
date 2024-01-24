@@ -6,11 +6,10 @@ import {TServices} from '../../data/massages';
 type MassageCardProps = {
   data: TServices;
   onReserve: () => void;
-  category?: string;
 };
 
-const MassageCard: FC<MassageCardProps> = ({data, onReserve, category}) => {
-  const {img, title} = data;
+const MassageCard: FC<MassageCardProps> = ({data, onReserve}) => {
+  const {img, title, attendee} = data;
 
   return (
     <Styled.MassageContainer>
@@ -23,7 +22,7 @@ const MassageCard: FC<MassageCardProps> = ({data, onReserve, category}) => {
         <Styled.MassageTextContainer>
           <Styled.MassageTitle numberOfLines={1}>{title}</Styled.MassageTitle>
           <Styled.MassageSubtitle numberOfLines={2}>
-            {category === 'massage' ? 'Joana Lopes' : 'Outra Mulher la'}
+            {attendee}
           </Styled.MassageSubtitle>
         </Styled.MassageTextContainer>
       </Styled.MassageInfoContainer>

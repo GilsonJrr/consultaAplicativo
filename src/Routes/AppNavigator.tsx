@@ -18,7 +18,7 @@ const AppNavigator: React.FC = () => {
         tabBarIcon: ({color, size}) => {
           let iconName = '';
 
-          if (route.name === 'Calendario') {
+          if (route.name === 'Agenda') {
             iconName = 'event';
           } else if (route.name === 'Home') {
             iconName = 'home';
@@ -28,14 +28,14 @@ const AppNavigator: React.FC = () => {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#211504',
+        tabBarActiveTintColor: '#566246',
         tabBarInactiveTintColor: '#D0D4BC',
         headerShown: false,
         //Tab bar styles can be added here
         tabBarStyle: {
           marginBottom: 10,
           marginHorizontal: 10,
-          paddingVertical: 5,
+          paddingVertical: 10,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
           borderBottomLeftRadius: 15,
@@ -44,11 +44,19 @@ const AppNavigator: React.FC = () => {
           position: 'absolute',
           height: 50,
         },
-        tabBarLabelStyle: {paddingBottom: 3},
+        tabBarLabelStyle: {paddingBottom: 0},
       })}>
-      <Tab.Screen name="Calendario" component={Calendar} />
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Agenda"
+        component={Calendar}
+        options={{tabBarLabel: ''}}
+      />
+      <Tab.Screen name="Home" component={Home} options={{tabBarLabel: ''}} />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{tabBarLabel: ''}}
+      />
     </Tab.Navigator>
   );
 };

@@ -5,6 +5,7 @@ export type TServices = {
   img: string;
   price: number;
   duration: number;
+  attendee: string;
 };
 
 export const massotherapy: TServices[] = [
@@ -16,6 +17,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
   {
     id: 2,
@@ -25,6 +27,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
   {
     id: 3,
@@ -34,6 +37,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
   {
     id: 4,
@@ -43,6 +47,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
   {
     id: 5,
@@ -52,6 +57,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
   {
     id: 6,
@@ -61,6 +67,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
   {
     id: 7,
@@ -70,6 +77,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
   {
     id: 8,
@@ -79,6 +87,7 @@ export const massotherapy: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Joana Lopes',
   },
 ];
 
@@ -91,6 +100,7 @@ export const aesthetics: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Graziele',
   },
   {
     id: 2,
@@ -100,6 +110,7 @@ export const aesthetics: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Graziele',
   },
   {
     id: 3,
@@ -109,6 +120,7 @@ export const aesthetics: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Graziele',
   },
   {
     id: 4,
@@ -118,6 +130,7 @@ export const aesthetics: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Graziele',
   },
   {
     id: 5,
@@ -127,6 +140,7 @@ export const aesthetics: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Graziele',
   },
   {
     id: 6,
@@ -136,5 +150,6 @@ export const aesthetics: TServices[] = [
     img: 'https://float-in.pt/wp-content/uploads/massagem-sueca.jpg',
     price: 23.66,
     duration: 1.5,
+    attendee: 'Graziele',
   },
 ];

@@ -21,3 +21,28 @@ export const updateDateTime = (originalDateString: Date, newTime: string) => {
 
   return updatedDateString;
 };
+
+export const ageCalculator = (dataNascimentoStr: string) => {
+  const partesData: string[] = dataNascimentoStr.split('/');
+  const dia: number = parseInt(partesData[0], 10);
+  const mes: number = parseInt(partesData[1], 10) - 1; // Os meses em JavaScript começam do zero
+  const ano: number = parseInt(partesData[2], 10);
+
+  const dataNascimento: Date = new Date(ano, mes, dia);
+  const hoje: Date = new Date();
+  const anoNascimento: number = dataNascimento.getFullYear();
+  const anoAtual: number = hoje.getFullYear();
+
+  // Verifica se o aniversário já ocorreu este ano
+  const aniversarioOcorreuEsteAno: boolean =
+    hoje.getMonth() > dataNascimento.getMonth() ||
+    (hoje.getMonth() === dataNascimento.getMonth() &&
+      hoje.getDate() >= dataNascimento.getDate());
+
+  // Calcula a idade
+  const idade: number = aniversarioOcorreuEsteAno
+    ? anoAtual - anoNascimento
+    : anoAtual - anoNascimento - 1;
+
+  return idade;
+};

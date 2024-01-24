@@ -120,7 +120,7 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 
 
 project.ext.vectoricons = [
-    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' , 'Feather.tff', 'FontAwesome.tff' ] // Specify font files
+    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' , 'Feather.tff', 'FontAwesome.tff', 'AntDesign.ttf' ] // Specify font files
 ]
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")

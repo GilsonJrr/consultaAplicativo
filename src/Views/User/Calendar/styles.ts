@@ -9,6 +9,16 @@ export const Wrapper = styled.SafeAreaView`
   margin-top: 40px;
 `;
 
+export const Header = styled.View`
+  border-radius: 0px 0px 40px 40px;
+  background: #566246;
+  width: 100%;
+  padding: 20px 30px 20px;
+  margin-bottom: -40px;
+  z-index: 100;
+  position: relative;
+`;
+
 export const Container = styled.View`
   display: flex;
   flex-direction: row;
@@ -18,7 +28,7 @@ export const Container = styled.View`
 `;
 
 export const DateTag = styled.View`
-  background-color: #d88977;
+  background-color: #d0d4bc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,8 +62,21 @@ export const BookContainer = styled.View``;
 
 export const NextContainer = styled.View`
   display: flex;
-  margin: 20px;
-  background-color: #f9e7e3;
-  padding: 20px 5px;
-  border-radius: 10px;
+`;
+
+export const Title = styled.Text`
+  color: rgba(255, 255, 255, 0.8);
+  font-family: Inter;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+`;
+
+export const Text = styled.Text`
+  color: #fff;
+  font-family: Inter;
+  font-size: 27px;
+  font-style: normal;
+  font-weight: 400;
+  margin-bottom: 10px;
 `;

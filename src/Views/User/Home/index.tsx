@@ -59,7 +59,6 @@ const Home = () => {
             return (
               <MassageCard
                 data={item}
-                category={tab}
                 onReserve={() => {
                   navigation.navigate('Checkout', {
                     data: item,

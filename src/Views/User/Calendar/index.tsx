@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {Fragment, useCallback, useState} from 'react';
 import {FlatList, Text} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
@@ -41,11 +41,10 @@ const Calendar = () => {
     } catch (error) {}
   };
 
-  console.log('userData 2', userData);
-
   return (
-    <Styled.Wrapper>
-      <Styled.NextContainer>
+    <Fragment>
+      <Styled.Header>
+        <Styled.Text>Nosso Proximo encontro!</Styled.Text>
         <Styled.Container>
           <Styled.DateTag>
             <Text>
@@ -56,55 +55,57 @@ const Calendar = () => {
             </Text>
           </Styled.DateTag>
           <Styled.BookContainer>
-            <Text>{NextAppointment?.name}</Text>
-            <Text>
+            <Styled.Title>{NextAppointment?.name}</Styled.Title>
+            <Styled.Title>
               {moment(NextAppointment?.date).locale('pt-br').format('llll')}
-            </Text>
-            <Text>Com: {NextAppointment?.attendee}</Text>
+            </Styled.Title>
+            <Styled.Title>Com: {NextAppointment?.attendee}</Styled.Title>
           </Styled.BookContainer>
         </Styled.Container>
-      </Styled.NextContainer>
-      <Styled.Tab>
-        <Styled.TabOption
-          onPress={() => setTab('next')}
-          active={tab === 'next'}>
-          <Styled.TabText>Proximo</Styled.TabText>
-        </Styled.TabOption>
-        <Styled.TabOption
-          onPress={() => setTab('history')}
-          active={tab === 'history'}>
-          <Styled.TabText>Historico</Styled.TabText>
-        </Styled.TabOption>
-      </Styled.Tab>
-      <FlatList
-        data={
-          tab === 'next'
-            ? nextAppointments
-            : tab === 'history'
-            ? historyAppointments
-            : []
-        }
-        keyExtractor={item => item.id}
-        renderItem={({item}) => {
-          const date = item.date;
-          return (
-            <Styled.Container>
-              <Styled.DateTag>
-                <Text>{moment(date).locale('pt-br').format('DD')}</Text>
-                <Text>{moment(date).locale('pt-br').format('MMM')}</Text>
-              </Styled.DateTag>
-              <Styled.BookContainer>
-                <Text>{item.name}</Text>
-                <Text>{moment(date).locale('pt-br').format('llll')}</Text>
-                <Text>Com: {item.attendee}</Text>
-              </Styled.BookContainer>
-            </Styled.Container>
-          );
-        }}
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{height: 400, flexGrow: 0}}
-      />
-    </Styled.Wrapper>
+      </Styled.Header>
+      <Styled.Wrapper>
+        <Styled.Tab>
+          <Styled.TabOption
+            onPress={() => setTab('next')}
+            active={tab === 'next'}>
+            <Styled.TabText>Proximo</Styled.TabText>
+          </Styled.TabOption>
+          <Styled.TabOption
+            onPress={() => setTab('history')}
+            active={tab === 'history'}>
+            <Styled.TabText>Historico</Styled.TabText>
+          </Styled.TabOption>
+        </Styled.Tab>
+        <FlatList
+          data={
+            tab === 'next'
+              ? nextAppointments
+              : tab === 'history'
+              ? historyAppointments
+              : []
+          }
+          keyExtractor={item => item.id}
+          renderItem={({item}) => {
+            const date = item.date;
+            return (
+              <Styled.Container>
+                <Styled.DateTag>
+                  <Text>{moment(date).locale('pt-br').format('DD')}</Text>
+                  <Text>{moment(date).locale('pt-br').format('MMM')}</Text>
+                </Styled.DateTag>
+                <Styled.BookContainer>
+                  <Text>{item.name}</Text>
+                  <Text>{moment(date).locale('pt-br').format('llll')}</Text>
+                  <Text>Com: {item.attendee}</Text>
+                </Styled.BookContainer>
+              </Styled.Container>
+            );
+          }}
+          // eslint-disable-next-line react-native/no-inline-styles
+          style={{height: 450, flexGrow: 0}}
+        />
+      </Styled.Wrapper>
+    </Fragment>
   );
 };
 
