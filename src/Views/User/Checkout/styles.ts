@@ -4,7 +4,6 @@ export const Container = styled.View`
   background-color: #fcfef2;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   padding: 10px;
   border-radius: 10px;
   padding: 20px 30px;
@@ -13,7 +12,11 @@ export const Container = styled.View`
   gap: 10px;
 `;
 
-export const CheckoutContent = styled.View``;
+export const CheckoutContent = styled.ScrollView``;
+
+export const CheckoutContentWrapper = styled.View`
+  padding-bottom: 100px;
+`;
 
 export const ServiceResume = styled.View`
   border-radius: 20px;
@@ -38,7 +41,7 @@ export const ServiceResumeText = styled.Text`
   color: #000;
   text-align: center;
   font-family: Inter;
-  font-size: 28px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
 `;
@@ -47,7 +50,7 @@ export const ServiceResumeSubText = styled.Text`
   color: #696969;
   text-align: center;
   font-family: Inter;
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
 `;
@@ -64,8 +67,9 @@ export const Title = styled.Text`
 
 export const Description = styled.Text`
   color: #696969;
+  text-align: justify;
   font-family: Inter;
-  font-size: 20px;
+  font-size: 15px;
   font-style: normal;
   font-weight: 400;
   margin-bottom: 20px;

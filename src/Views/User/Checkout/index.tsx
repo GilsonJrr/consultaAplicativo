@@ -13,7 +13,8 @@ import {uidGenerator, updateDateTime} from '../../../utils';
 import {StatusBar} from 'react-native';
 import DateSelector from '../../../components/DateSelector';
 import TimeSelector from '../../../components/TimeSelector';
-import AlertCard from '../../../components/AlertCard';
+import Tabs from '../../../components/Tabs';
+import QuantitySelector from '../../../components/QuantitySelector';
 
 type ModalProps = {
   route: CheckoutScreenRouteProp;
@@ -35,8 +36,9 @@ const Checkout: FC<ModalProps> = ({route}) => {
   const {data} = route?.params;
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState('08:00');
+  const [tab, setTab] = useState('Simples');
+  const [quantity, setQuantity] = useState('');
   const [userData, setUserData] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     loadStoredData();
@@ -74,7 +76,7 @@ const Checkout: FC<ModalProps> = ({route}) => {
     //   );
     // } catch (error) {}
     // navigation.goBack();
-    setShowAlert(true);
+    // navigation.navigate('Registration');
     navigation.navigate('Confirmation', {
       data: {
         service: data.title,
@@ -85,18 +87,20 @@ const Checkout: FC<ModalProps> = ({route}) => {
         place: 'consultorio',
         attendee: data.attendee,
         phone: '84 99994-0101',
+        package: tab === 'Pacote',
+        quantity: Number(quantity),
       },
     });
   };
 
   return (
-    <Fragment>
-      <Styled.Container>
-        <StatusBar backgroundColor="#FCFEF2" />
-        <Styled.GoBackButton onPress={() => navigation.goBack()}>
-          <Icon name="chevron-left" size={30} color="#566246" />
-        </Styled.GoBackButton>
-        <Styled.CheckoutContent>
+    <Styled.Container>
+      <StatusBar backgroundColor="#FCFEF2" />
+      <Styled.GoBackButton onPress={() => navigation.goBack()}>
+        <Icon name="chevron-left" size={30} color="#566246" />
+      </Styled.GoBackButton>
+      <Styled.CheckoutContent showsVerticalScrollIndicator={false}>
+        <Styled.CheckoutContentWrapper>
           <Styled.MassageImg
             source={{
               uri: data?.img,
@@ -117,29 +121,37 @@ const Checkout: FC<ModalProps> = ({route}) => {
           </Styled.ServiceResume>
           <Styled.Text>Sobre</Styled.Text>
           <Styled.Description>{data?.subtitle}</Styled.Description>
-          <Styled.Text>Dia</Styled.Text>
-          <DateSelector
-            initialDate={today}
-            FinalDate={finalDate}
-            selectedDate={item => setDate(item)}
-          />
-          <Styled.Text>Horario</Styled.Text>
-          <TimeSelector
-            initialTime={'08:00'}
-            finalTime={'18:00'}
-            interval={60}
-            selectedTime={item => setTime(item)}
-          />
-        </Styled.CheckoutContent>
-
-        <Styled.ButtonContainer>
-          <Styled.Button onPress={handleBook}>
-            <Styled.ButtonText>MARCAR</Styled.ButtonText>
-          </Styled.Button>
-        </Styled.ButtonContainer>
-      </Styled.Container>
-      {/* {showAlert && <AlertCard title="Marcado com sucesso" />} */}
-    </Fragment>
+          <Tabs tabs={['Simples', 'Pacote']} selectTab={item => setTab(item)} />
+          {tab === 'Simples' ? (
+            <Fragment>
+              <Styled.Text>Dia</Styled.Text>
+              <DateSelector
+                initialDate={today}
+                FinalDate={finalDate}
+                selectedDate={item => setDate(item)}
+              />
+              <Styled.Text>Horario</Styled.Text>
+              <TimeSelector
+                initialTime={'08:00'}
+                finalTime={'18:00'}
+                interval={60}
+                selectedTime={item => setTime(item)}
+              />
+            </Fragment>
+          ) : (
+            <Fragment>
+              <Styled.Text>Quantidade</Styled.Text>
+              <QuantitySelector selectedQuantity={item => setQuantity(item)} />
+            </Fragment>
+          )}
+        </Styled.CheckoutContentWrapper>
+      </Styled.CheckoutContent>
+      <Styled.ButtonContainer>
+        <Styled.Button onPress={handleBook}>
+          <Styled.ButtonText>MARCAR</Styled.ButtonText>
+        </Styled.Button>
+      </Styled.ButtonContainer>
+    </Styled.Container>
   );
 };
 

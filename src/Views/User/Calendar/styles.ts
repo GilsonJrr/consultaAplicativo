@@ -47,7 +47,7 @@ export const Tab = styled.View`
 `;
 
 export const TabOption = styled.TouchableOpacity<Props>`
-  width: 50%;
+  width: 33%;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -4,19 +4,16 @@ type Props = {
   type?: 'main';
 };
 
-export const Container = styled.ScrollView`
-  position: absolute;
-  background-color: #566246;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-`;
+export const Container = styled.ScrollView``;
 
 export const Warper = styled.View`
-  position: relative;
+  position: absolute;
+  width: 100%;
   height: 100%;
-  padding: 30px 38px 0;
+  background-color: #566246;
+  left: 0;
+  top: 0;
+  padding: 50px 38px 0;
 `;
 
 export const AlertTitle = styled.Text`
@@ -68,5 +65,5 @@ export const ButtonText = styled.Text`
 
 export const ButtonContainer = styled.View`
   position: fixed;
-  bottom: 0;
+  bottom: 40px;
 `;

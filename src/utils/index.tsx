@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const uidGenerator = (length: number) => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -45,4 +47,21 @@ export const ageCalculator = (dataNascimentoStr: string) => {
     : anoAtual - anoNascimento - 1;
 
   return idade;
+};
+
+export const loadDataFromStorage = async (
+  storageKey: string,
+  setDataCallback: (item: any) => void,
+) => {
+  try {
+    const storedData = await AsyncStorage.getItem(storageKey);
+
+    if (storedData !== null) {
+      const parsedData = JSON.parse(storedData);
+      setDataCallback(parsedData);
+      console.log('Data loaded successfully!');
+    }
+  } catch (error) {
+    console.error(`Error loading data from ${storageKey}:`, error);
+  }
 };

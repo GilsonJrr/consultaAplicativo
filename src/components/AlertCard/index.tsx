@@ -1,20 +1,20 @@
 import React, {FC} from 'react';
 
 import * as Styled from './styles';
-import {ScrollView, StatusBar, Text} from 'react-native';
+import {StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../Routes/types';
 
 type AlertCardProps = {
-  title: string;
+  title?: string;
 };
 
-const AlertCard: FC<AlertCardProps> = ({title}) => {
+const AlertCard: FC<AlertCardProps> = () => {
   const navigation = useNavigation<NavigationType>();
   return (
-    <Styled.Container>
-      <Styled.Warper>
+    <Styled.Warper>
+      <Styled.Container>
         <StatusBar backgroundColor="#566246" />
         <Styled.AlertTitle>Maravilha!!</Styled.AlertTitle>
         <Styled.AlertText>
@@ -23,18 +23,16 @@ const AlertCard: FC<AlertCardProps> = ({title}) => {
         <Styled.CheckCircle>
           <Icon name="done" size={120} color="#566246" />
         </Styled.CheckCircle>
-        <Styled.ButtonContainer>
-          <Styled.Button
-            type="main"
-            onPress={() => navigation.navigate('Home')}>
-            <Styled.ButtonText>Home</Styled.ButtonText>
-          </Styled.Button>
-          <Styled.Button onPress={() => navigation.navigate('Agenda')}>
-            <Styled.ButtonText>Agenda</Styled.ButtonText>
-          </Styled.Button>
-        </Styled.ButtonContainer>
-      </Styled.Warper>
-    </Styled.Container>
+      </Styled.Container>
+      <Styled.ButtonContainer>
+        <Styled.Button type="main" onPress={() => navigation.navigate('Home')}>
+          <Styled.ButtonText>Home</Styled.ButtonText>
+        </Styled.Button>
+        <Styled.Button onPress={() => navigation.navigate('Agenda')}>
+          <Styled.ButtonText>Agenda</Styled.ButtonText>
+        </Styled.Button>
+      </Styled.ButtonContainer>
+    </Styled.Warper>
   );
 };
 

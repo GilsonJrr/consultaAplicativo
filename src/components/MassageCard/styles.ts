@@ -4,7 +4,7 @@ export const SearchButtonText = styled.Text`
   color: #000;
   text-align: center;
   font-family: Inter;
-  font-size: 10px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   text-transform: uppercase;
@@ -28,7 +28,6 @@ export const MassageContainer = styled.View`
   background: #f8fce1;
   border-radius: 10px;
   border-radius: 10px;
-  /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
   width: 100%;
   margin-bottom: 20px;
   position: relative;
@@ -78,15 +77,20 @@ export const MassageSubtitle = styled.Text`
   font-weight: 400;
 `;
 
+export const ButtonContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0 0 100px;
+  gap: 10px;
+`;
+
 export const BookMassageButton = styled.Pressable`
   border-radius: 4px;
   background: #d0d4bc;
-  margin: 20px auto 0 0;
-  padding: 5px 20px;
+  padding: 5px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 100px;
 `;
 
 export const MassagesContainer = styled.ScrollView`

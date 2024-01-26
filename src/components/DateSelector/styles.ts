@@ -5,8 +5,8 @@ type Props = {
 };
 
 export const Container = styled.ScrollView`
-  height: 0px;
-  margin: 0 0 -40px 0;
+  /* height: 10px; */
+  /* margin: 0 0 -40px 0; */
   padding: 0;
 `;
 

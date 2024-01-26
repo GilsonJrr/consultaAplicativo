@@ -1,9 +1,5 @@
 import styled from 'styled-components/native';
 
-type Props = {
-  active?: boolean;
-};
-
 export const WelcomeHeader = styled.View`
   border-radius: 0px 0px 40px 40px;
   background: #566246;
@@ -19,7 +15,7 @@ export const Warper = styled.SafeAreaView`
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 22px;
+  padding: 60px 22px;
 `;
 
 export const ProfileContainer = styled.View`
@@ -51,6 +47,7 @@ export const Greetings = styled.Text`
   font-size: 40px;
   font-style: normal;
   font-weight: 400;
+  margin-top: 10px;
 `;
 
 export const SearchContainer = styled.View`
@@ -81,25 +78,26 @@ export const Space = styled.View`
   height: 100px;
 `;
 
-export const TabSelectorContainer = styled.View`
-  border-radius: 13px;
-  background: #d0d4bc;
-  height: 43px;
-  width: 100%;
-  margin-top: 37px;
-  padding: 3px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const TabSelector = styled.TouchableOpacity<Props>`
-  border-radius: 10px;
-  background: ${({active}) => (active ? '#f8fce1' : 'transparent')};
-  width: 50%;
-  height: 37px;
+export const AlertContainer = styled.Pressable`
+  width: 39px;
+  height: 39px;
+  border-radius: 9px;
+  background: #717e60;
+  position: absolute;
+  right: 26px;
+  top: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const AlertSign = styled.View`
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background: #f00;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  z-index: 100;
 `;

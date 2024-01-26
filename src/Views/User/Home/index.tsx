@@ -1,18 +1,31 @@
-import React, {useState} from 'react';
+import React, {Fragment, useCallback, useState} from 'react';
 
 import * as Styled from './styles';
 import {massotherapy, aesthetics} from '../../../data/massages';
-import {FlatList, StatusBar, Text} from 'react-native';
+import {FlatList, StatusBar} from 'react-native';
 import MassageCard from '../../../components/MassageCard';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NavigationType} from '../../../Routes/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Tabs from '../../../components/Tabs';
+import {loadDataFromStorage} from '../../../utils';
+import useKeyboardVisibility from '../../../hooks/useKeyboardVisibility';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Home = () => {
-  const userName = 'Gilson Cosme';
   const navigation = useNavigation<NavigationType>();
+  const isKeyboardVisible = useKeyboardVisibility();
   const [search, setSearch] = useState('');
-  const [tab, setTab] = useState('massage');
+  const [tab, setTab] = useState('Massoterapia');
+  const [userData, setUserData] = useState([]);
+  const anointmentToday = true;
+
+  useFocusEffect(
+    useCallback(() => {
+      loadDataFromStorage('user', setUserData);
+    }, []),
+  );
 
   const filteredMassages = massotherapy.filter(a =>
     a.title.toUpperCase().includes(search.toUpperCase()),
@@ -32,8 +45,20 @@ const Home = () => {
     <SafeAreaView>
       <StatusBar animated={true} backgroundColor="#566246" />
       <Styled.WelcomeHeader>
-        <Styled.UserName>Olá, {userName}</Styled.UserName>
-        <Styled.Greetings>Escolha uma das nossos opções!</Styled.Greetings>
+        <Styled.AlertContainer>
+          {anointmentToday && <Styled.AlertSign />}
+          <Icon
+            name="notifications"
+            size={28}
+            color={anointmentToday ? '#FFFFFF' : '#566246'}
+          />
+        </Styled.AlertContainer>
+        {!isKeyboardVisible && (
+          <Fragment>
+            <Styled.UserName>Olá, {userData?.name}</Styled.UserName>
+            <Styled.Greetings>Escolha uma das nossos opções!</Styled.Greetings>
+          </Fragment>
+        )}
         <Styled.SearchInput
           value={search}
           placeholder="Procure um tipo de massagem"
@@ -41,20 +66,13 @@ const Home = () => {
         />
       </Styled.WelcomeHeader>
       <Styled.Warper>
-        <Styled.TabSelectorContainer>
-          <Styled.TabSelector
-            onPress={() => setTab('massage')}
-            active={tab === 'massage'}>
-            <Text>Massoterapia</Text>
-          </Styled.TabSelector>
-          <Styled.TabSelector
-            onPress={() => setTab('aesthetic')}
-            active={tab === 'aesthetic'}>
-            <Text>Estetica</Text>
-          </Styled.TabSelector>
-        </Styled.TabSelectorContainer>
+        <Tabs
+          tabs={['Massoterapia', 'Estetica']}
+          selectTab={item => setTab(item)}
+        />
         <FlatList
-          data={tab === 'massage' ? filteredMassages : filteredAesthetics}
+          showsVerticalScrollIndicator={false}
+          data={tab === 'Massoterapia' ? filteredMassages : filteredAesthetics}
           renderItem={({item}) => {
             return (
               <MassageCard
