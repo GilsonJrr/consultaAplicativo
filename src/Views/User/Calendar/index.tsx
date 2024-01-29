@@ -1,117 +1,150 @@
-import React, {Fragment, useCallback, useState} from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {FlatList, Text} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
-import {loadDataFromStorage} from '../../../utils';
-import {TUseData} from '../Profile';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import momentTimezone from 'moment-timezone';
 import 'moment/locale/pt-br';
+
+import {loadDataFromStorage} from '../../../utils';
+import {TAgenda, TUseData} from '../Profile';
 import * as Styled from './styles';
-import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
+import Tabs from '../../../components/Tabs';
 
 const Calendar = () => {
   const [tab, setTab] = useState('next');
+  const [waitingTab, setWaitingTab] = useState('confirmed');
   const [userData, setUserData] = useState<TUseData>();
+  const [agenda, setAgenda] = useState<TAgenda[]>();
+  const [packageAppointments, setPackageAppointments] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
       loadDataFromStorage('user', setUserData);
-      getUserByEmail(userData?.email || '');
-    }, [userData?.email]),
+    }, []),
   );
 
-  const getUserByEmail = async (_email: string) => {
-    try {
-      const userDoc = await firestore().collection('users').doc(_email).get();
-
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-        console.log('Dados do usuário:', userData);
-        try {
-          await AsyncStorage.setItem('user', JSON.stringify(userData));
-        } catch (error) {}
-      } else {
-        console.log('Usuário não encontrado');
+  useEffect(() => {
+    const fetchDataFromFirebase = async () => {
+      try {
+        const snapshot = await database()
+          .ref(`/agenda/${userData?.uid}`)
+          .once('value');
+        const snapshot2 = await database()
+          .ref(`/package/${userData?.uid}`)
+          .once('value');
+        if (snapshot.val()) {
+          console.log(snapshot.val());
+          setAgenda(snapshot.val());
+        }
+        if (snapshot2.val()) {
+          setPackageAppointments(snapshot2.val());
+        }
+      } catch (error) {
+        console.error('Error fetching data from Firebase:', error);
       }
-    } catch (error) {
-      console.error('Erro ao obter usuário por ID:', error);
+    };
+    fetchDataFromFirebase();
+  }, [userData?.uid]);
+
+  const today = momentTimezone(new Date()).tz('America/Sao_Paulo').toDate();
+
+  const nextAppointments = useMemo(() => {
+    if (agenda) {
+      return Object.values(agenda).filter(data => {
+        return new Date(data.dateUtc) > today;
+      });
     }
-  };
+  }, [agenda, today]);
 
-  const today = new Date();
-
-  const nextAppointments = userData?.agenda?.filter(data => {
-    return moment(data.day, 'DD [de] MMMM YYYY', 'pt').toDate() > today;
+  const confirmed = nextAppointments?.filter(a => {
+    return a.pendent === false;
   });
 
-  const historyAppointments = userData?.agenda?.filter(data => {
-    return moment(data.day, 'DD [de] MMMM YYYY', 'pt').toDate() < today;
+  const waiting = nextAppointments?.filter(a => {
+    return a.pendent === true;
   });
 
-  const PackagesAppointments = userData?.agenda?.filter(data => {
-    return data.type === 'pacote';
-  });
+  console.log('waiting', packageAppointments);
 
-  const NextAppointment = nextAppointments?.[0];
-  const date = moment(NextAppointment?.day, 'DD [de] MMMM', 'pt');
-  const dataWithTime = moment(
-    `${date.format('YYYY-MM-DD')} ${NextAppointment?.time}`,
-    'YYYY-MM-DD HH:mm',
-  );
+  const historyAppointments = useMemo(() => {
+    if (agenda) {
+      return Object.values(agenda).filter(data => {
+        return new Date(data.dateUtc) < today;
+      });
+    }
+  }, [agenda, today]);
+
+  const NextAppointment = confirmed?.[0];
+  const date = moment(NextAppointment?.dateUtc).locale('pt-br');
 
   return (
-    <Fragment>
+    <Styled.ContainerPage>
       <Styled.Header>
-        <Styled.Text>Nosso Proximo encontro!</Styled.Text>
-        <Styled.Container>
-          <Styled.DateTag>
-            <Text>{moment(dataWithTime).locale('pt-br').format('DD')}</Text>
-            <Text>{moment(dataWithTime).locale('pt-br').format('MMM')}</Text>
-          </Styled.DateTag>
-          <Styled.BookContainer>
-            <Styled.Title>{NextAppointment?.service}</Styled.Title>
-            <Styled.Title>
-              {moment(dataWithTime).locale('pt-br').format('llll')}
-            </Styled.Title>
-            <Styled.Title>Com: {NextAppointment?.attendee}</Styled.Title>
-          </Styled.BookContainer>
-        </Styled.Container>
+        <Styled.Text>
+          {NextAppointment ? 'Nosso Proximo encontro!' : 'Sua Agenda'}
+        </Styled.Text>
+        {NextAppointment && (
+          <Styled.Container>
+            <Styled.DateTag>
+              <Text>{moment(date).locale('pt-br').format('DD')}</Text>
+              <Text>{moment(date).locale('pt-br').format('MMM')}</Text>
+            </Styled.DateTag>
+            <Styled.BookContainer>
+              <Styled.Title>{NextAppointment?.service}</Styled.Title>
+              <Styled.Title>
+                {moment(date).locale('pt-br').format('llll')}
+              </Styled.Title>
+              <Styled.Title>Com: {NextAppointment?.attendee}</Styled.Title>
+            </Styled.BookContainer>
+          </Styled.Container>
+        )}
       </Styled.Header>
+
       <Styled.Wrapper>
-        <Styled.Tab>
-          <Styled.TabOption
-            onPress={() => setTab('next')}
-            active={tab === 'next'}>
-            <Styled.TabText>Proximo</Styled.TabText>
-          </Styled.TabOption>
-          <Styled.TabOption
-            onPress={() => setTab('packages')}
-            active={tab === 'packages'}>
-            <Styled.TabText>Pacotes</Styled.TabText>
-          </Styled.TabOption>
-          <Styled.TabOption
-            onPress={() => setTab('history')}
-            active={tab === 'history'}>
-            <Styled.TabText>Historico</Styled.TabText>
-          </Styled.TabOption>
-        </Styled.Tab>
+        <Tabs
+          tabs={[
+            {value: 'next', label: 'Proximo'},
+            {value: 'packages', label: 'Pacotes'},
+            {value: 'history', label: 'Historico'},
+          ]}
+          selectTab={item => setTab(item)}
+        />
+        {tab === 'next' && (
+          <Styled.Tab>
+            <Styled.TabOption
+              onPress={() => setWaitingTab('confirmed')}
+              active={waitingTab === 'confirmed'}>
+              <Styled.TabText>Confirmados</Styled.TabText>
+            </Styled.TabOption>
+            <Styled.TabOption
+              onPress={() => setWaitingTab('waiting')}
+              active={waitingTab === 'waiting'}>
+              <Styled.TabText>Aguardando</Styled.TabText>
+            </Styled.TabOption>
+          </Styled.Tab>
+        )}
         <FlatList
           data={
             tab === 'next'
-              ? nextAppointments
+              ? waitingTab === 'confirmed'
+                ? confirmed
+                : waiting
               : tab === 'history'
               ? historyAppointments
               : tab === 'packages'
-              ? PackagesAppointments
+              ? Object.values(packageAppointments)
               : []
           }
           renderItem={({item}) => {
-            const date = moment(item.day, 'DD [de] MMMM', 'pt');
-            const dataWithTime = moment(
-              `${date.format('YYYY-MM-DD')} ${item.time}`,
-              'YYYY-MM-DD HH:mm',
-            );
+            const date = moment(item.dateUtc).locale('pt-br');
             return (
               <Styled.Container>
                 <Styled.DateTag>
@@ -119,12 +152,8 @@ const Calendar = () => {
                     <Text>{item.type}</Text>
                   ) : (
                     <Fragment>
-                      <Text>
-                        {moment(dataWithTime).locale('pt-br').format('DD')}
-                      </Text>
-                      <Text>
-                        {moment(dataWithTime).locale('pt-br').format('MMM')}
-                      </Text>
+                      <Text>{moment(date).format('DD')}</Text>
+                      <Text>{moment(date).format('MMM')}</Text>
                     </Fragment>
                   )}
                 </Styled.DateTag>
@@ -134,9 +163,7 @@ const Calendar = () => {
                     {item.type === 'pacote' && `X ${item.packageQuantity}`}
                   </Text>
                   {item.type === 'simples' && (
-                    <Text>
-                      {moment(dataWithTime).locale('pt-br').format('llll')}
-                    </Text>
+                    <Text>{date.format('llll').toString()}</Text>
                   )}
                   <Text>Com: {item.attendee}</Text>
                 </Styled.BookContainer>
@@ -144,10 +171,10 @@ const Calendar = () => {
             );
           }}
           // eslint-disable-next-line react-native/no-inline-styles
-          style={{height: 450, flexGrow: 0}}
+          style={{height: 400, flexGrow: 0, width: '100%', marginTop: 20}}
         />
       </Styled.Wrapper>
-    </Fragment>
+    </Styled.ContainerPage>
   );
 };
 

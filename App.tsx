@@ -6,6 +6,8 @@ import AppNavigator from './src/Routes/AppNavigator';
 import Checkout from './src/Views/User/Checkout';
 import Confirmation, {TInfoConfirmation} from './src/Views/User/Confirmation';
 import Registration from './src/Views/Auth/Registration';
+import ProfileEdit from './src/Views/User/Profile/ProfileEdit';
+import TalkToUs from './src/Views/User/Profile/TalkToUs';
 import Login from './src/Views/Auth/Login';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {TServices} from './src/data/massages';
@@ -17,6 +19,8 @@ type RootStackParamList = {
   Confirmation: {info: TInfoConfirmation};
   Registration: undefined;
   Login: undefined;
+  ProfileEdit: undefined;
+  TalkToUs: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -60,6 +64,8 @@ const App: React.FC = () => {
           <Stack.Screen name="Tabs" component={AppNavigator} />
           <Stack.Screen name="Checkout" component={Checkout} />
           <Stack.Screen name="Confirmation" component={Confirmation} />
+          <Stack.Screen name="ProfileEdit" component={ProfileEdit} />
+          <Stack.Screen name="TalkToUs" component={TalkToUs} />
         </Stack.Navigator>
       )}
     </NavigationContainer>

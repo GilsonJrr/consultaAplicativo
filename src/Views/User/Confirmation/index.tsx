@@ -10,9 +10,9 @@ import {
 } from '../../../Routes/types';
 import moment from 'moment';
 import AlertCard from '../../../components/AlertCard';
-import firestore from '@react-native-firebase/firestore';
-import {loadDataFromStorage} from '../../../utils';
+import {loadDataFromStorage, uidGenerator} from '../../../utils';
 import {TUseData} from '../Profile';
+import database from '@react-native-firebase/database';
 
 export type TInfoConfirmation = {
   service: string;
@@ -25,6 +25,7 @@ export type TInfoConfirmation = {
   phone: string;
   package: boolean;
   quantity: number;
+  utcDate: string;
 };
 
 type ConfirmationProps = {
@@ -69,44 +70,37 @@ const Confirmation: FC<ConfirmationProps> = ({route}) => {
     {label: 'Telefone:', info: data.phone},
   ];
 
-  const newAgendaItem = [
-    {
-      service: data.service,
-      duration: data.duration,
-      value: data.package ? Number(data.value) * data.quantity : data.value,
-      day: data.package
-        ? ''
-        : moment(data.day).locale('pt-br').format('DD [de] MMMM'),
-      time: data.package ? '' : data.time,
-      type: data.package ? 'pacote' : 'simples',
-      packageQuantity: data.quantity,
-      place: data.place,
-      attendee: data.attendee,
-      phone: data.phone,
-      pendent: true,
-    },
-  ];
+  const dataFormatted = moment(
+    `${moment(data.day).toDate().getMonth() + 1}/${moment(data.day)
+      .toDate()
+      .getDate()} ${data.time}`,
+    'MM/DD HH:mm',
+  ).format();
 
-  const handleConfirm = async () => {
-    try {
-      const userDoc = await firestore()
-        .collection('users')
-        .doc(userData?.email)
-        .get();
-      const existingAgenda = userDoc?.data()?.agenda || [];
+  const newItem = {
+    value: data.package ? Number(data.value) * data.quantity : data.value,
+    name: userData?.name,
+    service: data.service,
+    type: data.package ? 'pacote' : 'simples',
+    packageQuantity: data.quantity,
+    phone: data.phone,
+    place: data.place,
+    attendee: data.attendee,
+    pendent: true,
+    dateUtc: dataFormatted,
+    id: uidGenerator(10),
+  };
 
-      await firestore()
-        .collection('users')
-        .doc(userData?.email)
-        .update({
-          agenda: [...existingAgenda, ...newAgendaItem],
-        });
-
-      console.log('Agenda adicionada com sucesso!');
-    } catch (error) {
-      console.error('Erro ao adicionar agenda:', error);
+  const handleConfirm = () => {
+    if (userData && userData.uid) {
+      if (data.package) {
+        database().ref(`/package/${userData.uid}/${newItem.id}`).set(newItem);
+        setShowCard(true);
+      } else {
+        database().ref(`/agenda/${userData.uid}/${newItem.id}`).set(newItem);
+        setShowCard(true);
+      }
     }
-    setShowCard(true);
   };
 
   return (
@@ -145,7 +139,7 @@ const Confirmation: FC<ConfirmationProps> = ({route}) => {
           <Styled.Button type="main" onPress={() => navigation.goBack()}>
             <Styled.ButtonText>CANCELAR</Styled.ButtonText>
           </Styled.Button>
-          <Styled.Button onPress={handleConfirm}>
+          <Styled.Button onPress={() => handleConfirm()}>
             <Styled.ButtonText type="main">CONFIRMAR</Styled.ButtonText>
           </Styled.Button>
         </Styled.ButtonContainer>

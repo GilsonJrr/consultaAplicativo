@@ -32,7 +32,8 @@ const Registration: FC = () => {
               age: birthDate,
               phone: phone,
               gender: gender,
-              udi: userUID,
+              uid: userUID,
+              firstLogIn: true,
             });
           });
       })

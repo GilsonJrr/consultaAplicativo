@@ -16,7 +16,8 @@ const Login: FC = () => {
       auth()
         .signInWithEmailAndPassword(email, password)
         .then(userCredential => {
-          getUserByEmail(email), console.log('USER: ', userCredential);
+          getUserByEmail(userCredential.user.uid),
+            console.log('USER: ', userCredential);
         })
         .catch(error => {
           console.log(error.code);

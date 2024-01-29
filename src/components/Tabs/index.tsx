@@ -3,13 +3,18 @@ import React, {FC, useState} from 'react';
 import * as Styled from './styles';
 import {Text} from 'react-native';
 
+type TTabProps = {
+  value: string;
+  label: string;
+};
+
 type TabsProps = {
-  tabs: string[];
+  tabs: TTabProps[];
   selectTab: (item: string) => void;
 };
 
 const Tabs: FC<TabsProps> = ({tabs, selectTab}) => {
-  const [tab, setTab] = useState(tabs[0]);
+  const [tab, setTab] = useState(tabs[0].value);
 
   const handleTab = (selectedTab: string) => {
     setTab(selectedTab);
@@ -21,10 +26,10 @@ const Tabs: FC<TabsProps> = ({tabs, selectTab}) => {
       {tabs.map(innerTab => {
         return (
           <Styled.TabSelector
-            onPress={() => handleTab(innerTab)}
-            active={tab === innerTab}
+            onPress={() => handleTab(innerTab.value)}
+            active={tab === innerTab.value}
             tabsSize={tabs.length}>
-            <Text>{innerTab}</Text>
+            <Text>{innerTab.label}</Text>
           </Styled.TabSelector>
         );
       })}

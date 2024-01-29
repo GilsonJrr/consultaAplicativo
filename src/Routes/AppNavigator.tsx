@@ -15,23 +15,22 @@ const AppNavigator: React.FC = () => {
       initialRouteName="Home"
       screenOptions={({route}) => ({
         // eslint-disable-next-line react/no-unstable-nested-components
-        tabBarIcon: ({color, size}) => {
+        tabBarIcon: ({color}) => {
           let iconName = '';
 
           if (route.name === 'Agenda') {
-            iconName = 'event';
+            iconName = 'calendar-month';
           } else if (route.name === 'Home') {
             iconName = 'home';
           } else if (route.name === 'Profile') {
             iconName = 'person';
           }
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return <Icon name={iconName} size={30} color={color} />;
         },
         tabBarActiveTintColor: '#566246',
         tabBarInactiveTintColor: '#D0D4BC',
         headerShown: false,
-        //Tab bar styles can be added here
         tabBarStyle: {
           marginBottom: 10,
           marginHorizontal: 10,
@@ -42,7 +41,7 @@ const AppNavigator: React.FC = () => {
           borderBottomRightRadius: 15,
           backgroundColor: '#F8FCE1',
           position: 'absolute',
-          height: 50,
+          height: 60,
         },
         tabBarLabelStyle: {paddingBottom: 0},
       })}>

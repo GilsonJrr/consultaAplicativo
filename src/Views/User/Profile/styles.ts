@@ -1,11 +1,6 @@
 import styled from 'styled-components/native';
 
-type Props = {
-  active?: boolean;
-};
-
 export const Header = styled.View`
-  border-radius: 0px 0px 40px 40px;
   background: #566246;
   width: 100%;
   padding: 20px 30px 20px;
@@ -15,7 +10,60 @@ export const Header = styled.View`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  border-radius: 0px 0px 40px 40px;
+`;
+
+export const Card = styled.TouchableOpacity`
+  background: #566246;
+  width: 100%;
+  z-index: 100;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px auto;
+  border-radius: 15px;
+  padding: 10px;
+`;
+
+export const CardIconContainer = styled.View`
+  border-radius: 15px;
+  padding: 10px;
+  background: #d0d4bc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TitlesContainer = styled.View``;
+
+export const DisplayName = styled.Text`
+  color: #fcfef2;
+  font-family: Inter;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 400;
+`;
+
+export const DisplayEmail = styled.Text`
+  color: #fcfef2;
+  font-family: Inter;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+`;
+
+export const PhotoContainer = styled.View`
+  width: 70px;
   height: 70px;
+  border-radius: 1000px;
+  background: #d0d4bc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #566246;
 `;
 
 export const Warper = styled.SafeAreaView`
@@ -23,89 +71,11 @@ export const Warper = styled.SafeAreaView`
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 22px;
+  padding: 0 22px;
 `;
 
-export const PhotoContainer = styled.View`
-  width: 100px;
-  height: 100px;
-  border-radius: 1000px;
-  background: #d9d9d9;
-  position: absolute;
-  top: 50%;
-`;
-
-export const UserName = styled.Text`
-  color: rgba(255, 255, 255, 0.8);
-  font-family: Inter;
-  font-size: 18px;
-  margin-top: 10px;
-  font-style: normal;
-  font-weight: 400;
-`;
-
-export const InputContainer = styled.View`
-  margin-top: 50px;
+export const OptionsContainer = styled.ScrollView`
+  margin-top: 60px;
   width: 100%;
-`;
-
-export const Input = styled.TextInput`
-  width: 100%;
-  height: 39px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: #fff;
-  padding: 10px;
-  margin: 0 0 20px 0;
-  border: 1px solid #566246;
-`;
-
-export const Label = styled.Text`
-  color: #566246;
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  margin: 0 0 4px 2px;
-`;
-
-export const SearchContainer = styled.View`
   display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: center;
-`;
-
-export const MassagesContainer = styled.ScrollView`
-  margin: 20px 0 0 0;
-  width: 100%;
-  padding: 0 0 100px 0;
-  display: flex;
-`;
-
-export const Space = styled.View`
-  height: 100px;
-`;
-
-export const TabSelectorContainer = styled.View`
-  border-radius: 13px;
-  background: #d0d4bc;
-  height: 43px;
-  width: 100%;
-  margin-top: 37px;
-  padding: 3px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const TabSelector = styled.TouchableOpacity<Props>`
-  border-radius: 10px;
-  background: ${({active}) => (active ? '#f8fce1' : 'transparent')};
-  width: 50%;
-  height: 37px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;

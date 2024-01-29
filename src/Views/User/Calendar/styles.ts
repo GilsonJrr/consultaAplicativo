@@ -4,9 +4,15 @@ type Props = {
   active?: boolean;
 };
 
+export const ContainerPage = styled.View`
+  background-color: #fcfef2;
+`;
+
 export const Wrapper = styled.SafeAreaView`
-  padding: 0 20px;
+  padding: 15px 20px;
   margin-top: 40px;
+  background-color: #fcfef2;
+  height: 100%;
 `;
 
 export const Header = styled.View`
@@ -43,11 +49,11 @@ export const Tab = styled.View`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 20px;
+  padding: 20px 20px 0px;
 `;
 
 export const TabOption = styled.TouchableOpacity<Props>`
-  width: 33%;
+  width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,4 +85,5 @@ export const Text = styled.Text`
   font-style: normal;
   font-weight: 400;
   margin-bottom: 10px;
+  text-align: center;
 `;

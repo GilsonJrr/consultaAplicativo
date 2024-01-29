@@ -2,11 +2,12 @@ import styled from 'styled-components/native';
 
 type Props = {
   active?: boolean;
+  available?: boolean;
 };
 
 export const Container = styled.ScrollView``;
 
-export const DaysContainer = styled.Pressable<Props>`
+export const DaysContainer = styled.TouchableOpacity<Props>`
   width: 78px;
   /* padding: 10px; */
   height: 37px;
@@ -16,6 +17,7 @@ export const DaysContainer = styled.Pressable<Props>`
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: ${({available}) => (available ? '1' : '0.4')};
 `;
 
 export const DaysText = styled.Text`

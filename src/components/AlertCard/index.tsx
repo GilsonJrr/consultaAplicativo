@@ -5,6 +5,7 @@ import {StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../Routes/types';
+import ReactWhatsapp from 'react-whatsapp';
 
 type AlertCardProps = {
   title?: string;
@@ -32,6 +33,8 @@ const AlertCard: FC<AlertCardProps> = () => {
           <Styled.ButtonText>Agenda</Styled.ButtonText>
         </Styled.Button>
       </Styled.ButtonContainer>
+      {/* <ReactWhatsapp number="55-84-99994-0101" message="Hello World!!!" /> */}
+      {/* <ReactWhatsapp number="55-84-99994-0101" message="teste" /> */}
     </Styled.Warper>
   );
 };

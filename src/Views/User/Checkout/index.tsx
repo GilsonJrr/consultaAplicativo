@@ -8,8 +8,6 @@ import {
 } from '../../../Routes/types';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {uidGenerator, updateDateTime} from '../../../utils';
 import {StatusBar} from 'react-native';
 import DateSelector from '../../../components/DateSelector';
 import TimeSelector from '../../../components/TimeSelector';
@@ -35,48 +33,15 @@ const Checkout: FC<ModalProps> = ({route}) => {
   const navigation = useNavigation<NavigationType>();
   const {data} = route?.params;
   const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState('08:00');
+  const [time, setTime] = useState<string>();
   const [tab, setTab] = useState('Simples');
   const [quantity, setQuantity] = useState('');
-  const [userData, setUserData] = useState([]);
 
   useEffect(() => {
-    loadStoredData();
-  }, []);
-
-  const loadStoredData = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem('booked');
-      if (storedData !== null) {
-        const parsedData = JSON.parse(storedData);
-        setUserData(parsedData);
-        console.log('Data loaded successfully!');
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-    }
-  };
+    setTime('');
+  }, [tab]);
 
   const handleBook = async () => {
-    // const dataTobeSaved: BookingType[] = [
-    //   ...userData,
-    //   {
-    //     id: uidGenerator(10),
-    //     name: data.title,
-    //     date: new Date(updateDateTime(date, time)),
-    //     attendee: 'Joana Lopes',
-    //   },
-    // ];
-
-    // try {
-    //   await AsyncStorage.setItem(
-    //     'booked',
-    //     JSON.stringify(dataTobeSaved),
-    //     // '',
-    //   );
-    // } catch (error) {}
-    // navigation.goBack();
-    // navigation.navigate('Registration');
     navigation.navigate('Confirmation', {
       data: {
         service: data.title,
@@ -121,7 +86,13 @@ const Checkout: FC<ModalProps> = ({route}) => {
           </Styled.ServiceResume>
           <Styled.Text>Sobre</Styled.Text>
           <Styled.Description>{data?.subtitle}</Styled.Description>
-          <Tabs tabs={['Simples', 'Pacote']} selectTab={item => setTab(item)} />
+          <Tabs
+            tabs={[
+              {label: 'Simples', value: 'Simples'},
+              {label: 'Pacote', value: 'Pacote'},
+            ]}
+            selectTab={item => setTab(item)}
+          />
           {tab === 'Simples' ? (
             <Fragment>
               <Styled.Text>Dia</Styled.Text>
@@ -136,6 +107,7 @@ const Checkout: FC<ModalProps> = ({route}) => {
                 finalTime={'18:00'}
                 interval={60}
                 selectedTime={item => setTime(item)}
+                day={date}
               />
             </Fragment>
           ) : (
@@ -147,7 +119,9 @@ const Checkout: FC<ModalProps> = ({route}) => {
         </Styled.CheckoutContentWrapper>
       </Styled.CheckoutContent>
       <Styled.ButtonContainer>
-        <Styled.Button onPress={handleBook}>
+        <Styled.Button
+          onPress={handleBook}
+          disabled={tab !== 'Pacote' && !time}>
           <Styled.ButtonText>MARCAR</Styled.ButtonText>
         </Styled.Button>
       </Styled.ButtonContainer>

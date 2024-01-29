@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+// type Props = {
+//   disabled?: boolean
+// }
+
 export const Container = styled.View`
   background-color: #fcfef2;
   display: flex;
@@ -102,7 +106,7 @@ export const ButtonContainer = styled.View`
   margin: 0px auto;
 `;
 
-export const Button = styled.Pressable`
+export const Button = styled.TouchableOpacity`
   border-radius: 15px;
   background: #566246;
   width: 60%;
@@ -110,6 +114,7 @@ export const Button = styled.Pressable`
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: ${({disabled}) => (disabled ? 0.5 : 1)};
 `;
 
 export const GoBackButton = styled.Pressable`

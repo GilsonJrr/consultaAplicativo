@@ -1,9 +1,7 @@
 import React, {FC, useEffect, useState} from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import * as Styled from './styles';
 import {TServices} from '../../data/massages';
-import styled from 'styled-components';
 
 type MassageCardProps = {
   data: TServices;
@@ -11,20 +9,11 @@ type MassageCardProps = {
 };
 
 const MassageCard: FC<MassageCardProps> = ({data, onReserve}) => {
-  // const {img, title, attendee} = data;
   const [serviceData, setServiceData] = useState(data);
 
   useEffect(() => {
     setServiceData(data);
   }, [data]);
-
-  const handleFavorite = (id: number) => {
-    setServiceData(
-      serviceData.id === id
-        ? {...serviceData, favorite: !serviceData.favorite}
-        : serviceData,
-    );
-  };
 
   return (
     <Styled.MassageContainer>
@@ -46,14 +35,6 @@ const MassageCard: FC<MassageCardProps> = ({data, onReserve}) => {
       <Styled.ButtonContainer>
         <Styled.BookMassageButton onPress={onReserve}>
           <Styled.SearchButtonText>Ver detalhes</Styled.SearchButtonText>
-        </Styled.BookMassageButton>
-        <Styled.BookMassageButton
-          onPress={() => handleFavorite(serviceData.id)}>
-          <Icon
-            name="favorite"
-            size={20}
-            color={serviceData.favorite ? '#566246' : '#a8b09c'}
-          />
         </Styled.BookMassageButton>
       </Styled.ButtonContainer>
     </Styled.MassageContainer>
