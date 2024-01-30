@@ -5,11 +5,14 @@ import * as Styled from './styles';
 type ButtonsProps = {
   children?: ReactNode | ReactNode[];
   onPress?: () => void;
+  disabled?: boolean;
 };
 
-const Button: FC<ButtonsProps> = ({children, onPress}) => {
+const Button: FC<ButtonsProps> = ({children, onPress, disabled}) => {
   return (
-    <Styled.ButtonWarper onPress={onPress}>{children}</Styled.ButtonWarper>
+    <Styled.ButtonWarper onPress={onPress} disabled={disabled}>
+      {children}
+    </Styled.ButtonWarper>
   );
 };
 

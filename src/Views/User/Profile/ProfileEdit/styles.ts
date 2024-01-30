@@ -122,7 +122,9 @@ export const Input = styled.TextInput`
   flex-shrink: 0;
   border-radius: 10px;
   background: #fff;
-  padding: 10px;
+  padding: 15px 20px;
+  font-size: 15px;
+  color: #566246;
   margin: 0 0 10px 0;
   border: 1px solid #566246;
 `;
@@ -144,6 +146,8 @@ export const InputWarper = styled.View<Props>`
 
 export const SimpleInput = styled.TextInput`
   font-size: 20px;
+  width: 100%;
+  color: #566246;
 `;
 
 export const Label = styled.Text`
@@ -199,4 +203,9 @@ export const TabSelector = styled.TouchableOpacity<Props>`
 export const GoBackButton = styled.Pressable`
   position: absolute;
   left: 30px;
+`;
+
+export const FirstLoginMessage = styled.Text`
+  text-align: center;
+  margin-bottom: 20px;
 `;

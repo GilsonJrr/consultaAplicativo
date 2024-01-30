@@ -3,8 +3,7 @@ import * as Styled from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../../Routes/types';
 import auth from '@react-native-firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import firestore from '@react-native-firebase/firestore';
+import {saveAsyncData} from '../../../utils/asyncStorage';
 
 const Login: FC = () => {
   const navigation = useNavigation<NavigationType>();
@@ -16,8 +15,7 @@ const Login: FC = () => {
       auth()
         .signInWithEmailAndPassword(email, password)
         .then(userCredential => {
-          getUserByEmail(userCredential.user.uid),
-            console.log('USER: ', userCredential);
+          saveAsyncData('userUid', userCredential.user.uid);
         })
         .catch(error => {
           console.log(error.code);
@@ -27,24 +25,6 @@ const Login: FC = () => {
           if (error.code === '') {
           }
         });
-    }
-  };
-
-  const getUserByEmail = async (_email: string) => {
-    try {
-      const userDoc = await firestore().collection('users').doc(_email).get();
-
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-        console.log('Dados do usuário:', userData);
-        try {
-          await AsyncStorage.setItem('user', JSON.stringify(userData));
-        } catch (error) {}
-      } else {
-        console.log('Usuário não encontrado');
-      }
-    } catch (error) {
-      console.error('Erro ao obter usuário por ID:', error);
     }
   };
 

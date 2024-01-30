@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 export const uidGenerator = (length: number) => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -13,55 +11,26 @@ export const uidGenerator = (length: number) => {
   return id;
 };
 
-export const updateDateTime = (originalDateString: Date, newTime: string) => {
-  var originalDate = new Date(originalDateString);
-
-  var [hours, minutes] = newTime.split(':');
-  originalDate.setUTCHours(Number(hours), Number(minutes), 0, 0);
-
-  var updatedDateString = originalDate.toISOString();
-
-  return updatedDateString;
-};
-
-export const ageCalculator = (dataNascimentoStr: string) => {
-  const partesData: string[] = dataNascimentoStr.split('/');
-  const dia: number = parseInt(partesData[0], 10);
-  const mes: number = parseInt(partesData[1], 10) - 1; // Os meses em JavaScript começam do zero
-  const ano: number = parseInt(partesData[2], 10);
-
-  const dataNascimento: Date = new Date(ano, mes, dia);
-  const hoje: Date = new Date();
-  const anoNascimento: number = dataNascimento.getFullYear();
-  const anoAtual: number = hoje.getFullYear();
-
-  // Verifica se o aniversário já ocorreu este ano
-  const aniversarioOcorreuEsteAno: boolean =
-    hoje.getMonth() > dataNascimento.getMonth() ||
-    (hoje.getMonth() === dataNascimento.getMonth() &&
-      hoje.getDate() >= dataNascimento.getDate());
-
-  // Calcula a idade
-  const idade: number = aniversarioOcorreuEsteAno
-    ? anoAtual - anoNascimento
-    : anoAtual - anoNascimento - 1;
-
-  return idade;
-};
-
-export const loadDataFromStorage = async (
-  storageKey: string,
-  setDataCallback: (item: any) => void,
+export const timesArrayGenerator = (
+  startTime: string,
+  endTime: string,
+  intervalGap: number,
 ) => {
-  try {
-    const storedData = await AsyncStorage.getItem(storageKey);
+  const _startTime = new Date(`2024-01-01 ${startTime}`);
+  const _finishTime = new Date(`2024-01-01 ${endTime}`);
+  const horas = [];
 
-    if (storedData !== null) {
-      const parsedData = JSON.parse(storedData);
-      setDataCallback(parsedData);
-      console.log('Data loaded successfully!');
-    }
-  } catch (error) {
-    console.error(`Error loading data from ${storageKey}:`, error);
+  let _timeNow = new Date(_startTime);
+  while (_timeNow <= _finishTime) {
+    horas.push(
+      _timeNow.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }),
+    );
+    _timeNow.setMinutes(_timeNow.getMinutes() + intervalGap);
   }
+
+  return horas;
 };

@@ -1,4 +1,4 @@
-import React, {FC, Fragment, useCallback, useState} from 'react';
+import React, {FC, Fragment, useCallback, useEffect, useState} from 'react';
 
 import * as Styled from './styles';
 import {StatusBar} from 'react-native';
@@ -10,9 +10,11 @@ import {
 } from '../../../Routes/types';
 import moment from 'moment';
 import AlertCard from '../../../components/AlertCard';
-import {loadDataFromStorage, uidGenerator} from '../../../utils';
+import {uidGenerator} from '../../../utils';
 import {TUseData} from '../Profile';
 import database from '@react-native-firebase/database';
+import {getFirebaseValue} from '../../../utils/fireBaseRequest';
+import {loadAsyncData} from '../../../utils/asyncStorage';
 
 export type TInfoConfirmation = {
   service: string;
@@ -38,13 +40,17 @@ const Confirmation: FC<ConfirmationProps> = ({route}) => {
   const {data} = route?.params;
   const [showCard, setShowCard] = useState(false);
   const [userData, setUserData] = useState<TUseData>();
+  const [userUid, setUserUid] = useState();
 
   useFocusEffect(
     useCallback(() => {
-      loadDataFromStorage('user', setUserData);
-    }, []),
+      getFirebaseValue(`users/${userUid}`, setUserData);
+    }, [userUid]),
   );
 
+  useEffect(() => {
+    loadAsyncData('userUid', setUserUid);
+  }, []);
   console.log(userData);
 
   const information = [
@@ -98,6 +104,7 @@ const Confirmation: FC<ConfirmationProps> = ({route}) => {
         setShowCard(true);
       } else {
         database().ref(`/agenda/${userData.uid}/${newItem.id}`).set(newItem);
+        database().ref(`/bookedData/${newItem.id}`).set(newItem.dateUtc);
         setShowCard(true);
       }
     }

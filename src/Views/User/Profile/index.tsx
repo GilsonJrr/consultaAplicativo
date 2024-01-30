@@ -1,12 +1,13 @@
-import React, {Fragment, useCallback, useState} from 'react';
+import React, {Fragment, useCallback, useEffect, useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {loadDataFromStorage} from '../../../utils';
 import {NavigationType} from '../../../Routes/types';
 import * as Styled from './styles';
+import {loadAsyncData, saveAsyncData} from '../../../utils/asyncStorage';
+import {getFirebaseValue} from '../../../utils/fireBaseRequest';
 
 export type TAgenda = {
   value: string;
@@ -30,11 +31,19 @@ export type TUseData = {
   phone: string;
   agenda: TAgenda[];
   uid: string;
+  observation: string;
+  firstLogIn: boolean;
 };
 
 const Profile = () => {
   const [userData, setUserData] = useState<TUseData>();
   const navigation = useNavigation<NavigationType>();
+  const [userUid, setUserUid] = useState();
+
+  const logOut = () => {
+    saveAsyncData('userUid', '');
+    auth().signOut();
+  };
 
   const options = [
     {
@@ -61,17 +70,19 @@ const Profile = () => {
     {
       label: 'Sair',
       icon: 'logout',
-      action: () => {
-        auth().signOut();
-      },
+      action: logOut,
     },
   ];
 
   useFocusEffect(
     useCallback(() => {
-      loadDataFromStorage('user', setUserData);
-    }, []),
+      getFirebaseValue(`users/${userUid}`, setUserData);
+    }, [userUid]),
   );
+
+  useEffect(() => {
+    loadAsyncData('userUid', setUserUid);
+  }, []);
 
   return (
     <Fragment>

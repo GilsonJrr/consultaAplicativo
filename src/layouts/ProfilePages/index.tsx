@@ -15,6 +15,8 @@ type ProfilePagesLayoutProps = {
   buttonText: string;
   children?: ReactNode | ReactNode[];
   onPress?: () => void;
+  showGoBack?: boolean;
+  disabledButton?: boolean;
 };
 
 const ProfilePagesLayout: FC<ProfilePagesLayoutProps> = ({
@@ -23,6 +25,8 @@ const ProfilePagesLayout: FC<ProfilePagesLayoutProps> = ({
   buttonText,
   children,
   onPress,
+  showGoBack = true,
+  disabledButton,
 }) => {
   const navigation = useNavigation<NavigationType>();
   const isKeyboardVisible = useKeyboardVisibility();
@@ -32,12 +36,16 @@ const ProfilePagesLayout: FC<ProfilePagesLayoutProps> = ({
       <StatusBar animated={true} backgroundColor="#fcfef2" />
       <Styled.Warper>
         <Styled.Card>
-          <Icon
-            name="chevron-left"
-            size={30}
-            color="#fcfef2"
-            onPress={() => navigation.goBack()}
-          />
+          {showGoBack ? (
+            <Icon
+              name="chevron-left"
+              size={30}
+              color="#fcfef2"
+              onPress={() => navigation.navigate('Profile')}
+            />
+          ) : (
+            <Icon name="" size={30} color="#fcfef2" />
+          )}
           <Styled.DisplayName>{pageTitle}</Styled.DisplayName>
           <Styled.CardIconContainer>
             <Icon name={icon} size={30} color="#566246" />
@@ -45,7 +53,7 @@ const ProfilePagesLayout: FC<ProfilePagesLayoutProps> = ({
         </Styled.Card>
         {children}
         {!isKeyboardVisible && (
-          <Button onPress={onPress}>
+          <Button onPress={onPress} disabled={disabledButton}>
             <Styled.DisplayName>{buttonText}</Styled.DisplayName>
           </Button>
         )}

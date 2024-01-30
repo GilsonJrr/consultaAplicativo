@@ -1,10 +1,11 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useMemo, useState} from 'react';
+import {Text} from 'react-native';
+
+import moment from 'moment';
 
 import * as Styled from './styles';
-import {Text} from 'react-native';
-import database from '@react-native-firebase/database';
-import moment from 'moment';
-import {TAgenda} from '../../Views/User/Profile';
+import {getFirebaseValue} from '../../utils/fireBaseRequest';
+import {timesArrayGenerator} from '../../utils';
 
 type MassageCardProps = {
   initialTime: string;
@@ -21,28 +22,12 @@ const TimeSelector: FC<MassageCardProps> = ({
   selectedTime,
   day,
 }) => {
+  const timeNow = moment().add(1, 'hours').format('HH:00');
+  const dayNow = moment().format('DD');
   const [chooseTime, setChooseTime] = useState<string>();
   const [agenda, setAgenda] = useState([]);
 
-  const times = (startTime: string, endTime: string, intervalGap: number) => {
-    const horaInicio = new Date(`2024-01-01 ${startTime}`);
-    const horaFim = new Date(`2024-01-01 ${endTime}`);
-    const horas = [];
-
-    let timeNow = new Date(horaInicio);
-    while (timeNow <= horaFim) {
-      horas.push(
-        timeNow.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        }),
-      );
-      timeNow.setMinutes(timeNow.getMinutes() + intervalGap);
-    }
-
-    return horas;
-  };
+  const timeArray = timesArrayGenerator(initialTime, finalTime, interval);
 
   const handleSelectedDate = (date: string) => {
     setChooseTime(date);
@@ -50,42 +35,33 @@ const TimeSelector: FC<MassageCardProps> = ({
   };
 
   useEffect(() => {
-    const fetchDataFromFirebase = async () => {
-      try {
-        const snapshot = await database().ref('/agenda').once('value');
-        if (snapshot.val()) {
-          setAgenda(snapshot.val());
-        }
-      } catch (error) {
-        console.error('Error fetching data from Firebase:', error);
-      }
-    };
-    fetchDataFromFirebase();
+    getFirebaseValue('bookedData', setAgenda);
   }, []);
 
-  const bookedDates: string[] = Object.values(agenda).reduce(
-    (acc: string[], item: TAgenda[]) => {
-      const dates = Object.values(item).map(subItem => ({
-        day: new Date(subItem.dateUtc).getDate(),
-        month: new Date(subItem.dateUtc).getMonth(),
-        time: moment(subItem.dateUtc).format('HH:mm'),
-      }));
+  const bookedDates = Object.values(agenda).reduce((acc: string[], item) => {
+    const formateDate = moment(item).format('HH:00');
+    if (
+      moment(item).format('DD/MM') === moment(day).format('DD/MM') &&
+      formateDate !== 'Invalid date'
+    ) {
+      acc.push(formateDate);
+    }
+    return acc;
+  }, []);
 
-      const filteredDates = dates.filter(
-        booked =>
-          booked.day === day.getDate() && booked.month === day.getMonth(),
-      );
-
-      return acc.concat(filteredDates.map(item => item.time));
-    },
-    [],
-  );
-
-  const timeArray = times(initialTime, finalTime, interval);
-  const timeArrayFiltered =
-    bookedDates.length > 0
+  const timeArrayFiltered = useMemo(() => {
+    return bookedDates.length > 0
       ? timeArray.filter(item => !bookedDates.includes(item))
       : timeArray;
+  }, [bookedDates, timeArray]);
+
+  const timeAvailable = useMemo(() => {
+    if (Number(dayNow) === day.getDate()) {
+      return timeArray.filter(time => time > timeNow);
+    } else {
+      return timeArray;
+    }
+  }, [day, dayNow, timeArray, timeNow]);
 
   useEffect(() => {
     setChooseTime('');
@@ -93,9 +69,10 @@ const TimeSelector: FC<MassageCardProps> = ({
 
   return (
     <Styled.Container horizontal showsHorizontalScrollIndicator={false}>
-      {timeArray.map(date => {
+      {timeAvailable.map((date, index) => {
         return (
           <Styled.DaysContainer
+            key={index}
             onPress={() => handleSelectedDate(date)}
             active={chooseTime === date}
             available={timeArrayFiltered.includes(date)}

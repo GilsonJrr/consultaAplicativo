@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -13,12 +13,24 @@ type DropDownProps = {
   options: TOptions[];
   icon?: string;
   initialValue?: string;
+  selectedValue?: (item: string) => void;
+  placeholder?: string;
 };
 
-const DropDown: FC<DropDownProps> = ({options, icon, initialValue = ''}) => {
+const DropDown: FC<DropDownProps> = ({
+  options,
+  icon,
+  initialValue = '',
+  selectedValue,
+  placeholder,
+}) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(initialValue);
   const [items, setItems] = useState(options);
+
+  useEffect(() => {
+    selectedValue?.(value);
+  }, [selectedValue, value]);
 
   return (
     <Styled.InputWarper>
@@ -34,6 +46,7 @@ const DropDown: FC<DropDownProps> = ({options, icon, initialValue = ''}) => {
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
+        placeholder={placeholder}
         // eslint-disable-next-line react-native/no-inline-styles
         textStyle={{
           color: '#566246',

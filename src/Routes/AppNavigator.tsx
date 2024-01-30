@@ -1,62 +1,76 @@
-import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import React, {useEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {ActivityIndicator, View} from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
-import Home from '../Views/User/Home';
-import Calendar from '../Views/User/Calendar';
-import Profile from '../Views/User/Profile';
+import {TServices} from '../data/massages';
 
-const Tab = createBottomTabNavigator();
+import TabNavigator from './TabNavigator';
+import Confirmation, {TInfoConfirmation} from '../Views/User/Confirmation';
+import Checkout from '../Views/User/Checkout';
+import Login from '../Views/Auth/Login';
+import Registration from '../Views/Auth/Registration';
+import ProfileEdit from '../Views/User/Profile/ProfileEdit';
+import TalkToUs from '../Views/User/Profile/TalkToUs';
+
+type RootStackParamList = {
+  Tabs: undefined;
+  Checkout: {data: TServices};
+  Confirmation: {info: TInfoConfirmation};
+  Registration: undefined;
+  Login: undefined;
+  ProfileEdit: undefined;
+  TalkToUs: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
+  const [initializing, setInitializing] = useState(true);
+  const [isLoggedIn, setLoggedIn] = useState<FirebaseAuthTypes.User | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged(_user => {
+      console.log('usuario: ', _user);
+      setLoggedIn(_user);
+      if (initializing) {
+        setInitializing(false);
+      }
+    });
+
+    return unsubscribe;
+  }, [initializing]);
+
+  if (initializing) {
+    return (
+      // eslint-disable-next-line react-native/no-inline-styles
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size={'large'} />
+      </View>
+    );
+  }
+
   return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={({route}) => ({
-        // eslint-disable-next-line react/no-unstable-nested-components
-        tabBarIcon: ({color}) => {
-          let iconName = '';
-
-          if (route.name === 'Agenda') {
-            iconName = 'calendar-month';
-          } else if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Profile') {
-            iconName = 'person';
-          }
-
-          return <Icon name={iconName} size={30} color={color} />;
-        },
-        tabBarActiveTintColor: '#566246',
-        tabBarInactiveTintColor: '#D0D4BC',
-        headerShown: false,
-        tabBarStyle: {
-          marginBottom: 10,
-          marginHorizontal: 10,
-          paddingVertical: 10,
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
-          borderBottomLeftRadius: 15,
-          borderBottomRightRadius: 15,
-          backgroundColor: '#F8FCE1',
-          position: 'absolute',
-          height: 60,
-        },
-        tabBarLabelStyle: {paddingBottom: 0},
-      })}>
-      <Tab.Screen
-        name="Agenda"
-        component={Calendar}
-        options={{tabBarLabel: ''}}
-      />
-      <Tab.Screen name="Home" component={Home} options={{tabBarLabel: ''}} />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{tabBarLabel: ''}}
-      />
-    </Tab.Navigator>
+    <NavigationContainer>
+      {!isLoggedIn ? (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Registration" component={Registration} />
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Tabs" component={TabNavigator} />
+          <Stack.Screen name="Checkout" component={Checkout} />
+          <Stack.Screen name="Confirmation" component={Confirmation} />
+          <Stack.Screen name="ProfileEdit" component={ProfileEdit} />
+          <Stack.Screen name="TalkToUs" component={TalkToUs} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
   );
 };
 

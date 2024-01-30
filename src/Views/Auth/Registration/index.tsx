@@ -3,39 +3,42 @@ import * as Styled from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../../Routes/types';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
+import {saveAsyncData} from '../../../utils/asyncStorage';
 
 const Registration: FC = () => {
   const navigation = useNavigation<NavigationType>();
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [phone, setPhone] = useState('');
-  const [gender, setGender] = useState('');
-  const [registrationStep, setRegistrationStep] = useState(1);
 
   const signUp = () => {
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
-        console.log('USER: ', userCredential);
         const userUID = userCredential.user.uid;
-        return userCredential.user
-          .updateProfile({
-            displayName: name,
-          })
-          .then(() => {
-            return firestore().collection('users').doc(userUID).set({
+        const firstLogIn = true;
+        return userCredential.user.updateProfile({}).then(() => {
+          return database()
+            .ref(`/users/${userUID}`)
+            .set({
+              adminUid: '',
               email: email,
-              name: name,
-              age: birthDate,
-              phone: phone,
-              gender: gender,
+              name: '',
+              age: '',
+              phone: '',
+              gender: '',
               uid: userUID,
-              firstLogIn: true,
+              firstLogIn: firstLogIn,
+              userType: 'client',
+            })
+            .then(() => {
+              saveAsyncData('userUid', userUID);
+
+              if (firstLogIn) {
+                navigation.navigate('ProfileEdit');
+              }
             });
-          });
+        });
       })
       .catch(error => {
         console.log(error.code);
@@ -53,28 +56,14 @@ const Registration: FC = () => {
       <Styled.Title>Criação de conta</Styled.Title>
       <Styled.Text>Por favor entre com suas informações</Styled.Text>
       <Styled.ContentScroll>
-        {registrationStep === 1 ? (
-          <Fragment>
-            <Styled.Text>e-mail</Styled.Text>
-            <Styled.Input value={email} onChangeText={setEmail} />
-            <Styled.Text>senha</Styled.Text>
-            <Styled.Input value={password} onChangeText={setPassword} />
-            <Styled.Text>Nome</Styled.Text>
-            <Styled.Input value={name} onChangeText={setName} />
-            <Styled.Text>Data de Nascimento</Styled.Text>
-            <Styled.Input value={birthDate} onChangeText={setBirthDate} />
-            <Styled.Text>Telefone</Styled.Text>
-            <Styled.Input
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-            />
-            <Styled.Text>Sexo</Styled.Text>
-            <Styled.Input value={gender} onChangeText={setGender} />
-          </Fragment>
-        ) : (
-          <Fragment></Fragment>
-        )}
+        <Fragment>
+          <Styled.Text>e-mail</Styled.Text>
+          <Styled.Input value={email} onChangeText={setEmail} />
+          <Styled.Text>Senha</Styled.Text>
+          <Styled.Input value={password} onChangeText={setPassword} />
+          <Styled.Text>Confirmar senha</Styled.Text>
+          <Styled.Input value={password} onChangeText={setPassword} />
+        </Fragment>
         <Styled.AlreadyRegisteredContainer>
           <Styled.AlreadyRegistered>
             Ja possui uma conta ?
@@ -89,9 +78,7 @@ const Registration: FC = () => {
         </Styled.AlreadyRegisteredContainer>
       </Styled.ContentScroll>
       <Styled.Button onPress={signUp}>
-        <Styled.ButtonText>
-          {registrationStep === 1 ? 'Proximo' : 'Enviar'}
-        </Styled.ButtonText>
+        <Styled.ButtonText>Entrar</Styled.ButtonText>
       </Styled.Button>
     </Styled.Container>
   );

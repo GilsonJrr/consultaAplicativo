@@ -37,7 +37,11 @@ export const CardIconContainer = styled.View`
   justify-content: center;
 `;
 
-export const TitlesContainer = styled.View``;
+export const TitlesContainer = styled.View`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 export const DisplayName = styled.Text`
   color: #fcfef2;
@@ -45,6 +49,7 @@ export const DisplayName = styled.Text`
   font-size: 25px;
   font-style: normal;
   font-weight: 400;
+  text-align: center;
 `;
 
 export const DisplayEmail = styled.Text`
@@ -53,6 +58,7 @@ export const DisplayEmail = styled.Text`
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
+  text-align: center;
 `;
 
 export const PhotoContainer = styled.View`

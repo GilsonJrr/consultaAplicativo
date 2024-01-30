@@ -5,54 +5,60 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {FlatList, Text} from 'react-native';
+import {FlatList, ListRenderItem, Text} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import 'moment/locale/pt-br';
 
-import {loadDataFromStorage} from '../../../utils';
-import {TAgenda, TUseData} from '../Profile';
 import * as Styled from './styles';
-import database from '@react-native-firebase/database';
+import {TAgenda} from '../Profile';
+import {getFirebaseValue} from '../../../utils/fireBaseRequest';
+import {loadAsyncData} from '../../../utils/asyncStorage';
 import Tabs from '../../../components/Tabs';
 
 const Calendar = () => {
   const [tab, setTab] = useState('next');
   const [waitingTab, setWaitingTab] = useState('confirmed');
-  const [userData, setUserData] = useState<TUseData>();
   const [agenda, setAgenda] = useState<TAgenda[]>();
   const [packageAppointments, setPackageAppointments] = useState([]);
+  const [userUid, setUserUid] = useState();
+
+  const renderItem: ListRenderItem<TAgenda> = ({item}) => {
+    const dateConverted = moment(item.dateUtc).locale('pt-br');
+    return (
+      <Styled.Container>
+        <Styled.DateTag>
+          {item.type === 'pacote' ? (
+            <Text>{item.type}</Text>
+          ) : (
+            <Fragment>
+              <Text>{moment(dateConverted).format('DD')}</Text>
+              <Text>{moment(dateConverted).format('MMM')}</Text>
+            </Fragment>
+          )}
+        </Styled.DateTag>
+        <Styled.BookContainer>
+          <Text>
+            {item.service}{' '}
+            {item.type === 'pacote' && `X ${item.packageQuantity}`}
+          </Text>
+          {item.type === 'simples' && (
+            <Text>{dateConverted.format('llll').toString()}</Text>
+          )}
+          <Text>Com: {item.attendee}</Text>
+        </Styled.BookContainer>
+      </Styled.Container>
+    );
+  };
 
   useFocusEffect(
     useCallback(() => {
-      loadDataFromStorage('user', setUserData);
-    }, []),
+      getFirebaseValue(`agenda/${userUid}`, setAgenda);
+      getFirebaseValue(`package/${userUid}`, setPackageAppointments);
+    }, [userUid]),
   );
-
-  useEffect(() => {
-    const fetchDataFromFirebase = async () => {
-      try {
-        const snapshot = await database()
-          .ref(`/agenda/${userData?.uid}`)
-          .once('value');
-        const snapshot2 = await database()
-          .ref(`/package/${userData?.uid}`)
-          .once('value');
-        if (snapshot.val()) {
-          console.log(snapshot.val());
-          setAgenda(snapshot.val());
-        }
-        if (snapshot2.val()) {
-          setPackageAppointments(snapshot2.val());
-        }
-      } catch (error) {
-        console.error('Error fetching data from Firebase:', error);
-      }
-    };
-    fetchDataFromFirebase();
-  }, [userData?.uid]);
 
   const today = momentTimezone(new Date()).tz('America/Sao_Paulo').toDate();
 
@@ -72,8 +78,6 @@ const Calendar = () => {
     return a.pendent === true;
   });
 
-  console.log('waiting', packageAppointments);
-
   const historyAppointments = useMemo(() => {
     if (agenda) {
       return Object.values(agenda).filter(data => {
@@ -84,6 +88,29 @@ const Calendar = () => {
 
   const NextAppointment = confirmed?.[0];
   const date = moment(NextAppointment?.dateUtc).locale('pt-br');
+
+  const selectedTab = useMemo(() => {
+    return tab === 'next'
+      ? waitingTab === 'confirmed'
+        ? confirmed
+        : waiting
+      : tab === 'history'
+      ? historyAppointments
+      : tab === 'packages'
+      ? Object.values(packageAppointments)
+      : [];
+  }, [
+    confirmed,
+    historyAppointments,
+    packageAppointments,
+    tab,
+    waiting,
+    waitingTab,
+  ]);
+
+  useEffect(() => {
+    loadAsyncData('userUid', setUserUid);
+  }, []);
 
   return (
     <Styled.ContainerPage>
@@ -132,46 +159,10 @@ const Calendar = () => {
           </Styled.Tab>
         )}
         <FlatList
-          data={
-            tab === 'next'
-              ? waitingTab === 'confirmed'
-                ? confirmed
-                : waiting
-              : tab === 'history'
-              ? historyAppointments
-              : tab === 'packages'
-              ? Object.values(packageAppointments)
-              : []
-          }
-          renderItem={({item}) => {
-            const date = moment(item.dateUtc).locale('pt-br');
-            return (
-              <Styled.Container>
-                <Styled.DateTag>
-                  {item.type === 'pacote' ? (
-                    <Text>{item.type}</Text>
-                  ) : (
-                    <Fragment>
-                      <Text>{moment(date).format('DD')}</Text>
-                      <Text>{moment(date).format('MMM')}</Text>
-                    </Fragment>
-                  )}
-                </Styled.DateTag>
-                <Styled.BookContainer>
-                  <Text>
-                    {item.service}{' '}
-                    {item.type === 'pacote' && `X ${item.packageQuantity}`}
-                  </Text>
-                  {item.type === 'simples' && (
-                    <Text>{date.format('llll').toString()}</Text>
-                  )}
-                  <Text>Com: {item.attendee}</Text>
-                </Styled.BookContainer>
-              </Styled.Container>
-            );
-          }}
-          // eslint-disable-next-line react-native/no-inline-styles
-          style={{height: 400, flexGrow: 0, width: '100%', marginTop: 20}}
+          showsVerticalScrollIndicator={false}
+          data={selectedTab}
+          renderItem={renderItem}
+          contentContainerStyle={{paddingBottom: 450, paddingTop: 20}}
         />
       </Styled.Wrapper>
     </Styled.ContainerPage>
