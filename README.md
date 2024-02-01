@@ -1,79 +1,72 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Aplicativo de Marcação de Consulta para Clínica de Massagem e Estética
 
-# Getting Started
+Bem-vindo ao repositório do aplicativo de marcação de consulta para uma clínica de massagem e estética. Este aplicativo foi desenvolvido para facilitar a reserva de horários, acesso aos serviços oferecidos pela clínica e interação com o perfil do usuário. Abaixo estão as principais funcionalidades e informações para facilitar o uso do aplicativo.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Funcionalidades Principais
 
-## Step 1: Start the Metro Server
+### 1. Autenticação (Login e Sign Up)
+- Permite que os usuários criem uma conta (Sign Up) ou façam login para acessar as funcionalidades do aplicativo.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+### 2. Páginas de Tab Navigation
 
-To start Metro, run the following command from the _root_ of your React Native project:
+#### a. Agenda
+- **Próximos Horários:** Visualização dos próximos horários disponíveis para agendamento.
+- **Pacotes:** Informações sobre pacotes disponíveis.
+- **Histórico:** Histórico de consultas anteriores.
+  - **Confirmados:** Consultas confirmadas.
+  - **Aguardando:** Consultas aguardando confirmação.
 
-```bash
-# using npm
-npm start
+#### b. Home
+- **Lista de Serviços:** Exibição dos serviços oferecidos pela clínica.
+  - **Seleção de Dia e Horário:** Possibilidade de selecionar o dia e horário desejados.
+  - **Página de Confirmação:** Confirmação dos detalhes da reserva.
+  - **Página de Alerta:** Confirmação de que a reserva foi concluída com sucesso.
 
-# OR using Yarn
-yarn start
-```
+#### c. Perfil
+- **Opções do Perfil:**
+  - **Editar Perfil:** Permite ao usuário editar suas informações pessoais.
+  - **Fale Conosco:** Canal de comunicação para dúvidas e sugestões.
+  - **Sair:** Encerra a sessão do usuário.
 
-## Step 2: Start your Application
+## Capturas de Tela
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+Adicionamos algumas capturas de tela para que você possa visualizar o design e a experiência do usuário do aplicativo.
 
-### For Android
+### 1. Tela de Login
+![Tela de Login](/screenshots/login.png)
 
-```bash
-# using npm
-npm run android
+### 2. Página Inicial
+![Página Inicial](/screenshots/home.png)
 
-# OR using Yarn
-yarn android
-```
+### 3. Agenda - Próximos Horários
+![Agenda - Próximos Horários](/screenshots/agenda.png)
 
-### For iOS
+### 4. Confirmação de Reserva
+![Confirmação de Reserva](/screenshots/confirmacao.png)
 
-```bash
-# using npm
-npm run ios
+### 5. Perfil - Editar Perfil
+![Perfil - Editar Perfil](/screenshots/editar_perfil.png)
 
-# OR using Yarn
-yarn ios
-```
+## Como Contribuir
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+Se você deseja contribuir para o desenvolvimento deste aplicativo, siga as etapas abaixo:
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+1. Faça um fork deste repositório.
+2. Crie uma branch para suas alterações (`git checkout -b nome-da-sua-branch`).
+3. Faça as alterações desejadas e commit (`git commit -m 'Descrição das alterações'`).
+4. Faça push para a branch (`git push origin nome-da-sua-branch`).
+5. Abra um Pull Request explicando suas alterações.
 
-## Step 3: Modifying your App
+## Tecnologias Utilizadas
 
-Now that you have successfully run the app, let's modify it.
+- [React Native](https://reactnative.dev/): Desenvolvimento de aplicativos móveis multiplataforma.
+- [Firebase](https://firebase.google.com/): Autenticação de usuários e armazenamento de dados em tempo real.
+- [React Navigation](https://reactnavigation.org/): Navegação entre telas no aplicativo.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## Equipe de Desenvolvimento
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+- Gilson Cosme de Vasconcelos Junior
 
-## Congratulations! :tada:
+Agradecemos por contribuir para o desenvolvimento deste aplicativo! Se tiver alguma dúvida ou problema, sinta-se à vontade para entrar em contato conosco.
 
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+**Divirta-se agendando suas consultas!**
