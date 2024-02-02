@@ -9,6 +9,7 @@ import {
 } from '../actions';
 
 import {
+  passwordResetFirebase,
   signInWithEmailPasswordFirebase,
   signOutFirebase,
   signUpWithEmailPasswordFirebase,
@@ -17,15 +18,19 @@ import {
 
 import {
   AuthAction,
+  AuthPasswordResetInput,
   AuthSignInInput,
   AuthSignUpInput,
   AuthTypes,
+  ErrorsArray,
   // UserRequest,
 } from '../types';
 
 import * as authSelectors from '../selectors';
 import {setUser} from '../../user/actions';
 import {UseData} from '../../user/types';
+import {showToast} from '../../../components/ToastConfig';
+import {extractError} from '../../../utils';
 
 export function* requestSignInEmailPasswordSaga(
   props: AuthAction<AuthSignInInput>,
@@ -45,6 +50,11 @@ export function* requestSignInEmailPasswordSaga(
     }
   } catch (err: any) {
     yield put(authError('cannot sign In'));
+    const errorCode: keyof typeof ErrorsArray = extractError(err);
+    showToast({
+      text1: 'Algo deu errado',
+      text2: `${ErrorsArray[errorCode]}`,
+    });
   }
 }
 
@@ -89,9 +99,39 @@ export function* requestSignUpEmailPasswordSaga(
         adminUid: '',
       };
       yield put(setUser(newUser));
+      showToast({
+        text1: 'Feito',
+        text2: 'Sua conta foi criada',
+      });
     }
-  } catch (err) {
+  } catch (err: any) {
     yield put(authError('cannot sign Up'));
+    showToast({
+      text1: 'Algo deu errado',
+      text2: 'Confira se ambas a senhas estao iguais e se esse email e valido',
+    });
+  }
+}
+
+export function* requestPasswordResetSaga(
+  props: AuthAction<AuthPasswordResetInput>,
+): any {
+  const email = props.payload.email;
+
+  try {
+    if (email) {
+      yield call(passwordResetFirebase, email);
+      showToast({
+        text1: 'Feito',
+        text2: 'Confira seu email  para resetar a senha',
+      });
+    }
+  } catch (err: any) {
+    yield put(authError('cannot sign In'));
+    showToast({
+      text1: 'Algo deu errado',
+      text2: 'Confira se esse email e valido',
+    });
   }
 }
 
@@ -105,4 +145,5 @@ export default [
     AuthTypes.REQUEST_SIGNUP_EMAIL_PASSWORD,
     requestSignUpEmailPasswordSaga,
   ),
+  takeLatest(AuthTypes.REQUEST_PASSWORD_RESET, requestPasswordResetSaga),
 ];

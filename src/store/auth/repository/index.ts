@@ -7,13 +7,7 @@ export const signUpWithEmailPasswordFirebase = async (
   return auth()
     .createUserWithEmailAndPassword(email, password)
     .then(user => user)
-    .catch(error => {
-      if (error.code === 'auth/wrong-password') {
-        console.log('Senha icorreta');
-      }
-      if (error.code === '') {
-      }
-    });
+    .catch(error => error);
 };
 
 export const signOutFirebase = () => {
@@ -27,6 +21,15 @@ export const signInWithEmailPasswordFirebase = async (
   return auth()
     .signInWithEmailAndPassword(email, password)
     .then(user => user.user)
+    .catch(err => {
+      throw new Error(err);
+    });
+};
+
+export const passwordResetFirebase = async (email: string) => {
+  return auth()
+    .sendPasswordResetEmail(email)
+    .then(user => user)
     .catch(err => {
       throw new Error(err);
     });

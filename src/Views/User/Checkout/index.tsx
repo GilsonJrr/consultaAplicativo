@@ -28,8 +28,9 @@ export type BookingType = {
 
 const Checkout: FC<ModalProps> = ({route}) => {
   const today = new Date();
+  today.setDate(today.getDate() + 1);
   const finalDate = new Date();
-  finalDate.setDate(today.getDate() + 40);
+  finalDate.setDate(today.getDate() + 10);
   const navigation = useNavigation<NavigationType>();
   const {data} = route?.params;
   const [date, setDate] = useState(new Date());

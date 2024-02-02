@@ -53,3 +53,15 @@ export const dateArrayGenerator = (initDate: Date, FinDate: Date) => {
 
   return arrayDeDatas;
 };
+
+export const extractError = (err: any) => {
+  const codeStart = err?.message?.indexOf('[auth/');
+  const codeEnd = err?.message?.indexOf(']', codeStart);
+
+  if (codeStart !== -1 && codeEnd !== -1) {
+    const codeError = err.message.substring(codeStart + 1, codeEnd);
+    return codeError;
+  } else {
+    return 'algo deu errado';
+  }
+};

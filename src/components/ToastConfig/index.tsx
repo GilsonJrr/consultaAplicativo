@@ -2,12 +2,15 @@ import React from 'react';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Styled from './styles';
+import Toast from 'react-native-toast-message';
 
-interface ToastConfigParams {
-  text1: string | undefined;
-  text2: string | undefined;
+type ToastConfigParams = {
+  text1?: string;
+  text2?: string;
+  visibilityTime?: string;
+  type?: string;
   [key: string]: string | undefined;
-}
+};
 
 interface ToastConfig {
   [key: string]: (params: ToastConfigParams) => React.ReactNode;
@@ -34,4 +37,19 @@ const toastConfig: ToastConfig = {
   ),
 };
 
-export default toastConfig;
+const showToast = ({
+  text1,
+  text2,
+  visibilityTime = '4000',
+  type = 'alertToast',
+}: ToastConfigParams) => {
+  Toast.show({
+    visibilityTime: Number(visibilityTime),
+    type: type,
+    text1: text1,
+    text2: text2,
+    swipeable: true,
+  });
+};
+
+export {toastConfig, showToast};

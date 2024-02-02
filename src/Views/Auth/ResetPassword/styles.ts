@@ -23,6 +23,15 @@ export const Title = styled.Text`
   font-weight: 400;
 `;
 
+export const SubTitle = styled.Text`
+  color: #566246;
+  font-family: Inter;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  text-align: center;
+`;
+
 export const Text = styled.Text`
   color: #566246;
   font-family: Inter;
@@ -52,7 +61,7 @@ export const AlreadyRegistered = styled.Text`
 
 export const ContentScroll = styled.ScrollView`
   width: 100%;
-  margin-top: 48px;
+  margin-top: 50px;
 `;
 
 export const Input = styled.TextInput`
@@ -80,5 +89,15 @@ export const ButtonText = styled.Text`
   font-size: 25px;
   font-style: normal;
   font-weight: 400;
-  /* text-transform: uppercase; */
+  text-transform: uppercase;
+`;
+
+export const TextSeparator = styled.Text`
+  color: #566246;
+  text-align: center;
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  margin: 10px 0;
 `;

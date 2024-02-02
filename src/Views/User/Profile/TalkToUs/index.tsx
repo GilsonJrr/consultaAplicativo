@@ -63,7 +63,8 @@ const TalkToUs = () => {
       pageTitle={'Fale conosco'}
       icon={'forum'}
       buttonText={'Enviar'}
-      onPress={sendEmail}>
+      onPress={sendEmail}
+      disabledButton={!subject}>
       <Styled.InputContainer>
         <StatusBar
           animated={true}

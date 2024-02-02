@@ -8,10 +8,7 @@ export enum AuthTypes {
   REQUEST_SIGNUP_EMAIL_PASSWORD = '@auth/REQUEST_SIGNUP_EMAIL_PASSWORD',
   SIGNUP_SUCCESS = '@auth/SIGNUP_SUCCESS',
   AUTH_ERROR = '@auth/AUTH_ERROR',
-  //agenda
-  REQUEST_USER_AGENDA = 'REQUEST_USER_AGENDA',
-  USER_AGENDA = 'USER_AGENDA',
-  CLEAN_UP_AGENDA = 'CLEAN_UP_AGENDA',
+  REQUEST_PASSWORD_RESET = 'REQUEST_PASSWORD_RESET',
 }
 
 export type AuthState = {
@@ -24,11 +21,6 @@ export type AuthState = {
   dateUtc?: string;
   firstLogIn: boolean;
 };
-
-// export type AgendaState = {
-//   isLoading: boolean;
-//   agenda: AgendaTypeValues[] | undefined;
-// };
 
 export type AuthAction<Payload> = {
   type: AuthTypes;
@@ -45,6 +37,10 @@ export interface AuthSignInInput {
   password: string;
 }
 
+export interface AuthPasswordResetInput {
+  email: string;
+}
+
 export interface AuthSignUpInput {
   email: string;
   password: string;
@@ -56,20 +52,6 @@ export type UserRequest = {
   uid: string;
 };
 
-// export type AgendaTypeValues = {
-//   value: string;
-//   name: string;
-//   service: string;
-//   type: string;
-//   packageQuantity: number;
-//   phone: string;
-//   place: string;
-//   attendee: string;
-//   pendent: boolean;
-//   dateUtc: string;
-//   id: string;
-// };
-
 export type UseData = {
   email: string;
   name: string;
@@ -80,3 +62,19 @@ export type UseData = {
   observation: string;
   firstLogIn: boolean;
 };
+
+export enum ErrorsArray {
+  'auth/invalid-email' = 'E-mail inválido.',
+  'auth/user-disabled' = 'Usuário desativado.',
+  'auth/user-not-found' = 'Usuário não encontrado.',
+  'auth/wrong-password' = 'Senha incorreta.',
+  'auth/network-request-failed' = 'Erro de rede ao tentar fazer login.',
+  'auth/user-cancelled' = 'Operação cancelada pelo usuário.',
+  'auth/unknown' = 'Erro desconhecido durante o login.',
+  'auth/argument-error' = 'Argumento inválido fornecido.',
+  'auth/timeout' = 'Tempo limite excedido na operação.',
+  'auth/too-many-requests' = 'Muitas tentativas. Tente novamente mais tarde.',
+  'auth/invalid-credential' = 'Email ou senha invalidos',
+  'auth/weak-password' = 'Senha muito fraca.',
+  'auth/email-already-in-use' = 'E-mail já em uso.',
+}

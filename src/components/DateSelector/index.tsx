@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {FlatList, ListRenderItem, Text} from 'react-native';
 
 import moment from 'moment';
@@ -30,6 +30,11 @@ const DateSelector: FC<MassageCardProps> = ({
       </Styled.DaysContainer>
     );
   };
+
+  useEffect(() => {
+    selectedDate(initialDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSelectedDate = (date: Date) => {
     setChooseDate(date);

@@ -1,10 +1,11 @@
+import {ServiceData} from '../../store/services/types';
+
 import React, {FC, useEffect, useState} from 'react';
 
 import * as Styled from './styles';
-import {TServices} from '../../data/massages';
 
 type MassageCardProps = {
-  data: TServices;
+  data: ServiceData;
   onReserve: () => void;
 };
 

@@ -5,10 +5,13 @@ import {NavigationType} from '../../../Routes/types';
 import {useDispatch} from 'react-redux';
 import {requestSignUpEmailPassword} from '../../../store/auth/actions';
 import Input from '../../../components/Input';
+import useKeyboardVisibility from '../../../hooks/useKeyboardVisibility';
 
 const Registration: FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationType>();
+  const isKeyboardVisible = useKeyboardVisibility();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,9 +28,16 @@ const Registration: FC = () => {
 
   return (
     <Styled.Container>
-      <Styled.Logo />
-      <Styled.Title>Criação de conta</Styled.Title>
-      <Styled.Text>Por favor entre com suas informações</Styled.Text>
+      {!isKeyboardVisible && (
+        <Fragment>
+          <Styled.Logo
+            source={require('../../../assets/main_logo.png')}
+            resizeMode="contain"
+          />
+          <Styled.Title>Criação de conta</Styled.Title>
+          <Styled.Text>Por favor entre com suas informações</Styled.Text>
+        </Fragment>
+      )}
       <Styled.ContentScroll>
         <Fragment>
           <Styled.Text>E-mail</Styled.Text>
@@ -60,15 +70,9 @@ const Registration: FC = () => {
           />
         </Fragment>
         <Styled.AlreadyRegisteredContainer>
-          <Styled.AlreadyRegistered>
-            Ja possui uma conta ?
-          </Styled.AlreadyRegistered>
           <Styled.AlreadyRegisteredButton
             onPress={() => navigation.navigate('Login')}>
-            <Styled.AlreadyRegistered>
-              {'  '}
-              Ir para o login
-            </Styled.AlreadyRegistered>
+            <Styled.AlreadyRegistered>Ir para o login</Styled.AlreadyRegistered>
           </Styled.AlreadyRegisteredButton>
         </Styled.AlreadyRegisteredContainer>
       </Styled.ContentScroll>

@@ -5,6 +5,7 @@ import {
   AuthAction,
   AuthSignInInput,
   AuthSignUpInput,
+  AuthPasswordResetInput,
 } from '../types';
 
 export function signIn(
@@ -28,6 +29,15 @@ export function requestSignInEmailPassword(
 ): AuthAction<AuthSignInInput> {
   return {
     type: AuthTypes.REQUEST_SIGNIN_EMAIL_PASSWORD,
+    payload: {...props},
+  };
+}
+
+export function requestPasswordReset(
+  props: AuthPasswordResetInput,
+): AuthAction<AuthPasswordResetInput> {
+  return {
+    type: AuthTypes.REQUEST_PASSWORD_RESET,
     payload: {...props},
   };
 }

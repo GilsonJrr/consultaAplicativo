@@ -9,12 +9,10 @@ export const Container = styled.View`
   padding: 20px 30px;
 `;
 
-export const Logo = styled.View`
-  background-color: #d9d9d9;
-  width: 60px;
-  height: 50px;
-  border-radius: 80px 0px 70px 13px;
-  margin-bottom: 43px;
+export const Logo = styled.Image`
+  width: 70%;
+  height: 100px;
+  margin: 20px 0;
 `;
 
 export const Title = styled.Text`
@@ -37,7 +35,8 @@ export const AlreadyRegisteredContainer = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  margin-top: 10px;
 `;
 
 export const AlreadyRegisteredButton = styled.Pressable``;
@@ -53,7 +52,7 @@ export const AlreadyRegistered = styled.Text`
 
 export const ContentScroll = styled.ScrollView`
   width: 100%;
-  margin-top: 48px;
+  margin-top: 10px;
 `;
 
 export const Input = styled.TextInput`
@@ -82,4 +81,14 @@ export const ButtonText = styled.Text`
   font-style: normal;
   font-weight: 400;
   text-transform: uppercase;
+`;
+
+export const TextSeparator = styled.Text`
+  color: #566246;
+  text-align: center;
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  margin: 10px 0;
 `;

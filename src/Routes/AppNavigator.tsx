@@ -1,3 +1,5 @@
+import {ServiceData} from '../store/services/types';
+
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {ActivityIndicator, View} from 'react-native';
@@ -5,22 +7,24 @@ import {ActivityIndicator, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 
-import {TServices} from '../data/massages';
-
 import TabNavigator from './TabNavigator';
-import Confirmation, {TInfoConfirmation} from '../Views/User/Confirmation';
-import Checkout from '../Views/User/Checkout';
+
 import Login from '../Views/Auth/Login';
 import Registration from '../Views/Auth/Registration';
+import ResetPassword from '../Views/Auth/ResetPassword';
+
+import Confirmation, {TInfoConfirmation} from '../Views/User/Confirmation';
+import Checkout from '../Views/User/Checkout';
 import ProfileEdit from '../Views/User/Profile/ProfileEdit';
 import TalkToUs from '../Views/User/Profile/TalkToUs';
 
 type RootStackParamList = {
   Tabs: undefined;
-  Checkout: {data: TServices};
+  Checkout: {data: ServiceData};
   Confirmation: {info: TInfoConfirmation};
   Registration: undefined;
   Login: undefined;
+  ResetPassword: undefined;
   ProfileEdit: undefined;
   TalkToUs: undefined;
 };
@@ -58,6 +62,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Registration" component={Registration} />
+          <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator screenOptions={{headerShown: false}}>

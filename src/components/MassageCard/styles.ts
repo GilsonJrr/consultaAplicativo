@@ -31,6 +31,9 @@ export const MassageContainer = styled.View`
   width: 100%;
   margin-bottom: 20px;
   position: relative;
+  ::shadow {
+    color: #000;
+  }
 `;
 
 export const MassageInfoContainer = styled.View`

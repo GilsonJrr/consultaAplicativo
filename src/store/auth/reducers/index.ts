@@ -34,6 +34,10 @@ interface RequestRequestSignupEmailPassword {
   type: AuthTypes.REQUEST_SIGNUP_EMAIL_PASSWORD;
 }
 
+interface RequestPasswordReset {
+  type: AuthTypes.REQUEST_PASSWORD_RESET;
+}
+
 interface RequestRequestSignupSucces {
   type: AuthTypes.SIGNUP_SUCCESS;
   payload: any;
@@ -46,7 +50,8 @@ type AuthAction =
   | RequestAuthError
   | RequestRequestSigninEmailPassword
   | RequestRequestSignupEmailPassword
-  | RequestRequestSignupSucces;
+  | RequestRequestSignupSucces
+  | RequestPasswordReset;
 
 const initialState: AuthState = {
   isLogged: false,
@@ -125,6 +130,14 @@ const authReducer: Reducer<AuthState, AuthAction> = (
         firstLogIn: true,
         email: action.payload.user.email,
         uid: action.payload.user.uid,
+      };
+    }
+    case AuthTypes.REQUEST_PASSWORD_RESET: {
+      return {
+        ...state,
+        isLogged: false,
+        isLoading: false,
+        error: undefined,
       };
     }
     default: {

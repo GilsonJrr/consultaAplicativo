@@ -3,23 +3,22 @@ import * as Styled from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../../Routes/types';
 import {useDispatch} from 'react-redux';
-import {requestSignInEmailPassword} from '../../../store/auth/actions';
 import Input from '../../../components/Input';
 import useKeyboardVisibility from '../../../hooks/useKeyboardVisibility';
+import {requestPasswordReset} from '../../../store/auth/actions';
 
-const Login: FC = () => {
+const ResetPassword: FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationType>();
   const isKeyboardVisible = useKeyboardVisibility();
 
   const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
-  const [showPassword, setShowPassword] = useState(false);
 
   const signIn = () => {
-    if (email && password) {
-      const user = {email, password};
-      dispatch(requestSignInEmailPassword(user));
+    if (email) {
+      const user = {email};
+      dispatch(requestPasswordReset(user));
+      navigation.navigate('Login');
     }
   };
 
@@ -31,8 +30,10 @@ const Login: FC = () => {
             source={require('../../../assets/main_logo.png')}
             resizeMode="contain"
           />
-          <Styled.Title>Login</Styled.Title>
-          <Styled.Text>Vamos la!</Styled.Text>
+          <Styled.Title>Recuperar senha</Styled.Title>
+          <Styled.SubTitle>
+            Entre com seu email para recuperar sua senha
+          </Styled.SubTitle>
         </Fragment>
       )}
       <Styled.ContentScroll>
@@ -43,36 +44,20 @@ const Login: FC = () => {
           borderType="round"
           margin="0 0 10px 0"
         />
-        <Styled.Text>senha</Styled.Text>
-        <Input
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          borderType="round"
-          iconName={showPassword ? 'visibility' : 'visibility-off'}
-          iconSide="right"
-          onClick={() => setShowPassword(prev => !prev)}
-        />
-        {/* <Styled.TextSeparator>ou</Styled.TextSeparator> */}
-        {/* SSO butons aqui */}
         <Styled.AlreadyRegisteredContainer>
           <Styled.AlreadyRegisteredButton
-            onPress={() => navigation.navigate('Registration')}>
-            <Styled.AlreadyRegistered>Criar uma conta</Styled.AlreadyRegistered>
-          </Styled.AlreadyRegisteredButton>
-          <Styled.AlreadyRegisteredButton
-            onPress={() => navigation.navigate('ResetPassword')}>
+            onPress={() => navigation.navigate('Login')}>
             <Styled.AlreadyRegistered>
-              Esqueceu a senha ?
+              Voltar pra o login
             </Styled.AlreadyRegistered>
           </Styled.AlreadyRegisteredButton>
         </Styled.AlreadyRegisteredContainer>
       </Styled.ContentScroll>
       <Styled.Button onPress={signIn}>
-        <Styled.ButtonText>entrar</Styled.ButtonText>
+        <Styled.ButtonText>Enviar</Styled.ButtonText>
       </Styled.Button>
     </Styled.Container>
   );
 };
 
-export default Login;
+export default ResetPassword;
