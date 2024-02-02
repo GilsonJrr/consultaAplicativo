@@ -2,29 +2,19 @@ import React, {FC, useState} from 'react';
 import * as Styled from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../../Routes/types';
-import auth from '@react-native-firebase/auth';
-import {saveAsyncData} from '../../../utils/asyncStorage';
+import {useDispatch} from 'react-redux';
+import {requestSignInEmailPassword} from '../../../store/auth/actions';
 
 const Login: FC = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation<NavigationType>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
 
   const signIn = () => {
     if (email && password) {
-      auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          saveAsyncData('userUid', userCredential.user.uid);
-        })
-        .catch(error => {
-          console.log(error.code);
-          if (error.code === 'auth/wrong-password') {
-            console.log('Senha icorreta');
-          }
-          if (error.code === '') {
-          }
-        });
+      const user = {email, password};
+      dispatch(requestSignInEmailPassword(user));
     }
   };
 

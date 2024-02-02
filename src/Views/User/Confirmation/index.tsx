@@ -1,4 +1,4 @@
-import React, {FC, Fragment, useCallback, useEffect, useState} from 'react';
+import React, {FC, Fragment, useCallback, useState} from 'react';
 
 import * as Styled from './styles';
 import {StatusBar} from 'react-native';
@@ -11,10 +11,12 @@ import {
 import moment from 'moment';
 import AlertCard from '../../../components/AlertCard';
 import {uidGenerator} from '../../../utils';
-import {TUseData} from '../Profile';
-import database from '@react-native-firebase/database';
-import {getFirebaseValue} from '../../../utils/fireBaseRequest';
-import {loadAsyncData} from '../../../utils/asyncStorage';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../store/root-reducer';
+import {AgendaTypeValues} from '../../../store/agenda/types';
+import {setUserAgenda, setUserPackage} from '../../../store/agenda/actions';
+import {requestUser} from '../../../store/user/actions';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 export type TInfoConfirmation = {
   service: string;
@@ -36,22 +38,21 @@ type ConfirmationProps = {
 };
 
 const Confirmation: FC<ConfirmationProps> = ({route}) => {
+  const dispatch = useDispatch();
+  const {uid, isLoading} = useSelector((state: RootState) => state.authReducer);
+  const {user, isLoading: userLoading} = useSelector(
+    (state: RootState) => state.userReducer,
+  );
+
   const navigation = useNavigation<NavigationType>();
   const {data} = route?.params;
   const [showCard, setShowCard] = useState(false);
-  const [userData, setUserData] = useState<TUseData>();
-  const [userUid, setUserUid] = useState();
 
   useFocusEffect(
     useCallback(() => {
-      getFirebaseValue(`users/${userUid}`, setUserData);
-    }, [userUid]),
+      dispatch(requestUser({uid: uid || ''}));
+    }, [dispatch, uid]),
   );
-
-  useEffect(() => {
-    loadAsyncData('userUid', setUserUid);
-  }, []);
-  console.log(userData);
 
   const information = [
     {label: 'Serviço:', info: data.service},
@@ -83,9 +84,11 @@ const Confirmation: FC<ConfirmationProps> = ({route}) => {
     'MM/DD HH:mm',
   ).format();
 
-  const newItem = {
-    value: data.package ? Number(data.value) * data.quantity : data.value,
-    name: userData?.name,
+  const newItem: AgendaTypeValues = {
+    value: data.package
+      ? String(Number(data.value) * data.quantity)
+      : data.value,
+    name: user?.name || '',
     service: data.service,
     type: data.package ? 'pacote' : 'simples',
     packageQuantity: data.quantity,
@@ -95,25 +98,29 @@ const Confirmation: FC<ConfirmationProps> = ({route}) => {
     pendent: true,
     dateUtc: dataFormatted,
     id: uidGenerator(10),
+    uid: uid || '',
   };
 
   const handleConfirm = () => {
-    if (userData && userData.uid) {
+    if (user && uid) {
       if (data.package) {
-        database().ref(`/package/${userData.uid}/${newItem.id}`).set(newItem);
+        dispatch(setUserPackage(newItem));
         setShowCard(true);
       } else {
-        database().ref(`/agenda/${userData.uid}/${newItem.id}`).set(newItem);
-        database().ref(`/bookedData/${newItem.id}`).set(newItem.dateUtc);
+        dispatch(setUserAgenda(newItem));
         setShowCard(true);
       }
     }
   };
 
+  if (isLoading || userLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <Fragment>
       <Styled.Container>
-        <StatusBar backgroundColor="#566246" />
+        <StatusBar animated={true} backgroundColor="#566246" />
         <Styled.AlertTitle>Confirmação!!</Styled.AlertTitle>
         <Styled.AlertText>
           Por favor confirme se esta todo OK!!

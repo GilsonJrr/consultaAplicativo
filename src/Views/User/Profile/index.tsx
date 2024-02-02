@@ -1,13 +1,17 @@
-import React, {Fragment, useCallback, useEffect, useState} from 'react';
+import React, {Fragment, useCallback} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
-import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {NavigationType} from '../../../Routes/types';
 import * as Styled from './styles';
-import {loadAsyncData, saveAsyncData} from '../../../utils/asyncStorage';
-import {getFirebaseValue} from '../../../utils/fireBaseRequest';
+import {FlatList, ListRenderItem} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../store/root-reducer';
+import {requestSignOut} from '../../../store/auth/actions';
+import {requestUser} from '../../../store/user/actions';
+import LoadingSpinner from '../../../components/LoadingSpinner';
+// import {selectUser} from '../../../library/redux/authSlice';
 
 export type TAgenda = {
   value: string;
@@ -35,17 +39,25 @@ export type TUseData = {
   firstLogIn: boolean;
 };
 
+export type TOptions = {
+  label: string;
+  icon: string;
+  action: () => void;
+};
+
 const Profile = () => {
-  const [userData, setUserData] = useState<TUseData>();
+  const dispatch = useDispatch();
+  const {uid, isLoading} = useSelector((state: RootState) => state.authReducer);
+  const {user, isLoading: userLoading} = useSelector(
+    (state: RootState) => state.userReducer,
+  );
   const navigation = useNavigation<NavigationType>();
-  const [userUid, setUserUid] = useState();
 
   const logOut = () => {
-    saveAsyncData('userUid', '');
-    auth().signOut();
+    dispatch(requestSignOut());
   };
 
-  const options = [
+  const options: TOptions[] = [
     {
       label: 'Editar perfil',
       icon: 'person',
@@ -74,15 +86,27 @@ const Profile = () => {
     },
   ];
 
+  const renderItem: ListRenderItem<TOptions> = ({item}) => {
+    return (
+      <Styled.Card onPress={item.action}>
+        <Styled.CardIconContainer>
+          <Icon name={item.icon} size={30} color="#566246" />
+        </Styled.CardIconContainer>
+        <Styled.DisplayName>{item.label}</Styled.DisplayName>
+        <Icon name="chevron-right" size={30} color="#fcfef2" />
+      </Styled.Card>
+    );
+  };
+
   useFocusEffect(
     useCallback(() => {
-      getFirebaseValue(`users/${userUid}`, setUserData);
-    }, [userUid]),
+      dispatch(requestUser({uid: uid || ''}));
+    }, [dispatch, uid]),
   );
 
-  useEffect(() => {
-    loadAsyncData('userUid', setUserUid);
-  }, []);
+  if (isLoading || userLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Fragment>
@@ -91,24 +115,17 @@ const Profile = () => {
           <Icon name="person" size={50} color="#566246" />
         </Styled.PhotoContainer>
         <Styled.TitlesContainer>
-          <Styled.DisplayName>{userData?.name}</Styled.DisplayName>
-          <Styled.DisplayEmail>{userData?.email}</Styled.DisplayEmail>
+          <Styled.DisplayName>{user?.name}</Styled.DisplayName>
+          <Styled.DisplayEmail>{user?.email}</Styled.DisplayEmail>
         </Styled.TitlesContainer>
       </Styled.Header>
       <Styled.Warper>
-        <Styled.OptionsContainer>
-          {options.map((option, index) => {
-            return (
-              <Styled.Card key={index} onPress={option.action}>
-                <Styled.CardIconContainer>
-                  <Icon name={option.icon} size={30} color="#566246" />
-                </Styled.CardIconContainer>
-                <Styled.DisplayName>{option.label}</Styled.DisplayName>
-                <Icon name="chevron-right" size={30} color="#fcfef2" />
-              </Styled.Card>
-            );
-          })}
-        </Styled.OptionsContainer>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={options}
+          renderItem={renderItem}
+          contentContainerStyle={{paddingTop: 60}}
+        />
       </Styled.Warper>
     </Fragment>
   );

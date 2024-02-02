@@ -11,7 +11,7 @@ export const uidGenerator = (length: number) => {
   return id;
 };
 
-export const timesArrayGenerator = (
+export const timeArrayGenerator = (
   startTime: string,
   endTime: string,
   intervalGap: number,
@@ -33,4 +33,23 @@ export const timesArrayGenerator = (
   }
 
   return horas;
+};
+
+export const dateArrayGenerator = (initDate: Date, FinDate: Date) => {
+  let inicio = new Date(initDate);
+  let fim = new Date(FinDate);
+
+  if (inicio > fim) {
+    console.error('Data de início deve ser anterior à data de fim');
+    return [];
+  }
+
+  let arrayDeDatas = [];
+
+  while (inicio <= fim) {
+    arrayDeDatas.push(new Date(inicio));
+    inicio.setDate(inicio.getDate() + 1);
+  }
+
+  return arrayDeDatas;
 };

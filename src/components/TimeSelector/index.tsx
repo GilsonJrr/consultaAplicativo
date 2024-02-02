@@ -1,11 +1,14 @@
 import React, {FC, useEffect, useMemo, useState} from 'react';
-import {Text} from 'react-native';
+import {FlatList, ListRenderItem, Text} from 'react-native';
 
 import moment from 'moment';
 
 import * as Styled from './styles';
-import {getFirebaseValue} from '../../utils/fireBaseRequest';
-import {timesArrayGenerator} from '../../utils';
+import {timeArrayGenerator} from '../../utils';
+import {useDispatch, useSelector} from 'react-redux';
+import {requestUserBookedDate} from '../../store/agenda/actions';
+import {RootState} from '../../store/root-reducer';
+import LoadingSpinner from '../LoadingSpinner';
 
 type MassageCardProps = {
   initialTime: string;
@@ -22,32 +25,30 @@ const TimeSelector: FC<MassageCardProps> = ({
   selectedTime,
   day,
 }) => {
+  const dispatch = useDispatch();
+  const {bookedDate, isLoading} = useSelector(
+    (state: RootState) => state.agendaReducer,
+  );
   const timeNow = moment().add(1, 'hours').format('HH:00');
   const dayNow = moment().format('DD');
+
   const [chooseTime, setChooseTime] = useState<string>();
-  const [agenda, setAgenda] = useState([]);
 
-  const timeArray = timesArrayGenerator(initialTime, finalTime, interval);
+  const timeArray = timeArrayGenerator(initialTime, finalTime, interval);
 
-  const handleSelectedDate = (date: string) => {
-    setChooseTime(date);
-    selectedTime(date);
-  };
-
-  useEffect(() => {
-    getFirebaseValue('bookedData', setAgenda);
-  }, []);
-
-  const bookedDates = Object.values(agenda).reduce((acc: string[], item) => {
-    const formateDate = moment(item).format('HH:00');
-    if (
-      moment(item).format('DD/MM') === moment(day).format('DD/MM') &&
-      formateDate !== 'Invalid date'
-    ) {
-      acc.push(formateDate);
-    }
-    return acc;
-  }, []);
+  const bookedDates = Object.values(bookedDate || '').reduce(
+    (acc: string[], item) => {
+      const formateDate = moment(item).format('HH:00');
+      if (
+        moment(item).format('DD/MM') === moment(day).format('DD/MM') &&
+        formateDate !== 'Invalid date'
+      ) {
+        acc.push(formateDate);
+      }
+      return acc;
+    },
+    [],
+  );
 
   const timeArrayFiltered = useMemo(() => {
     return bookedDates.length > 0
@@ -55,7 +56,7 @@ const TimeSelector: FC<MassageCardProps> = ({
       : timeArray;
   }, [bookedDates, timeArray]);
 
-  const timeAvailable = useMemo(() => {
+  const timeAvailable: string[] = useMemo(() => {
     if (Number(dayNow) === day.getDate()) {
       return timeArray.filter(time => time > timeNow);
     } else {
@@ -63,25 +64,45 @@ const TimeSelector: FC<MassageCardProps> = ({
     }
   }, [day, dayNow, timeArray, timeNow]);
 
+  const handleSelectedDate = (date: string) => {
+    setChooseTime(date);
+    selectedTime(date);
+  };
+
+  const renderItem: ListRenderItem<string> = ({item}) => {
+    return (
+      <Styled.DaysContainer
+        onPress={() => handleSelectedDate(item)}
+        active={chooseTime === item}
+        available={timeArrayFiltered.includes(item)}
+        disabled={!timeArrayFiltered.includes(item)}>
+        <Text>{item}</Text>
+      </Styled.DaysContainer>
+    );
+  };
+
+  useEffect(() => {
+    dispatch(requestUserBookedDate());
+  }, [dispatch]);
+
   useEffect(() => {
     setChooseTime('');
+    selectedTime('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day]);
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <Styled.Container horizontal showsHorizontalScrollIndicator={false}>
-      {timeAvailable.map((date, index) => {
-        return (
-          <Styled.DaysContainer
-            key={index}
-            onPress={() => handleSelectedDate(date)}
-            active={chooseTime === date}
-            available={timeArrayFiltered.includes(date)}
-            disabled={!timeArrayFiltered.includes(date)}>
-            <Text>{date}</Text>
-          </Styled.DaysContainer>
-        );
-      })}
-    </Styled.Container>
+    <FlatList
+      showsHorizontalScrollIndicator={false}
+      horizontal
+      data={timeAvailable}
+      renderItem={renderItem}
+      keyExtractor={item => item}
+    />
   );
 };
 

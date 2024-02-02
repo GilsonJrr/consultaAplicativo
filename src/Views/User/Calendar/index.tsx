@@ -14,16 +14,25 @@ import 'moment/locale/pt-br';
 
 import * as Styled from './styles';
 import {TAgenda} from '../Profile';
-import {getFirebaseValue} from '../../../utils/fireBaseRequest';
-import {loadAsyncData} from '../../../utils/asyncStorage';
 import Tabs from '../../../components/Tabs';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../store/root-reducer';
+import {
+  cleanUpAgenda,
+  requestUserAgenda,
+  requestUserPackage,
+} from '../../../store/agenda/actions';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 const Calendar = () => {
+  const dispatch = useDispatch();
+  const {uid} = useSelector((state: RootState) => state.authReducer);
+  const {agenda, isLoading, packages} = useSelector(
+    (state: RootState) => state.agendaReducer,
+  );
+
   const [tab, setTab] = useState('next');
   const [waitingTab, setWaitingTab] = useState('confirmed');
-  const [agenda, setAgenda] = useState<TAgenda[]>();
-  const [packageAppointments, setPackageAppointments] = useState([]);
-  const [userUid, setUserUid] = useState();
 
   const renderItem: ListRenderItem<TAgenda> = ({item}) => {
     const dateConverted = moment(item.dateUtc).locale('pt-br');
@@ -55,10 +64,17 @@ const Calendar = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getFirebaseValue(`agenda/${userUid}`, setAgenda);
-      getFirebaseValue(`package/${userUid}`, setPackageAppointments);
-    }, [userUid]),
+      setTab('next');
+      dispatch(requestUserPackage({uid: uid || ''}));
+      dispatch(requestUserAgenda({uid: uid || ''}));
+    }, [dispatch, uid]),
   );
+
+  useEffect(() => {
+    return () => {
+      dispatch(cleanUpAgenda());
+    };
+  }, [dispatch]);
 
   const today = momentTimezone(new Date()).tz('America/Sao_Paulo').toDate();
 
@@ -97,20 +113,13 @@ const Calendar = () => {
       : tab === 'history'
       ? historyAppointments
       : tab === 'packages'
-      ? Object.values(packageAppointments)
+      ? Object.values(packages || [])
       : [];
-  }, [
-    confirmed,
-    historyAppointments,
-    packageAppointments,
-    tab,
-    waiting,
-    waitingTab,
-  ]);
+  }, [confirmed, historyAppointments, packages, tab, waiting, waitingTab]);
 
-  useEffect(() => {
-    loadAsyncData('userUid', setUserUid);
-  }, []);
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Styled.ContainerPage>

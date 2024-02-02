@@ -2,52 +2,20 @@ import React, {FC, Fragment, useState} from 'react';
 import * as Styled from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../../Routes/types';
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
-import {saveAsyncData} from '../../../utils/asyncStorage';
+import {useDispatch} from 'react-redux';
+import {requestSignUpEmailPassword} from '../../../store/auth/actions';
 
 const Registration: FC = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation<NavigationType>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const signUp = () => {
-    auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        const userUID = userCredential.user.uid;
-        const firstLogIn = true;
-        return userCredential.user.updateProfile({}).then(() => {
-          return database()
-            .ref(`/users/${userUID}`)
-            .set({
-              adminUid: '',
-              email: email,
-              name: '',
-              age: '',
-              phone: '',
-              gender: '',
-              uid: userUID,
-              firstLogIn: firstLogIn,
-              userType: 'client',
-            })
-            .then(() => {
-              saveAsyncData('userUid', userUID);
-
-              if (firstLogIn) {
-                navigation.navigate('ProfileEdit');
-              }
-            });
-        });
-      })
-      .catch(error => {
-        console.log(error.code);
-        if (error.code === 'auth/wrong-password') {
-          console.log('Senha icorreta');
-        }
-        if (error.code === '') {
-        }
-      });
+    if (email && password) {
+      const user = {email, password};
+      dispatch(requestSignUpEmailPassword(user));
+    }
   };
 
   return (

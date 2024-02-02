@@ -35,7 +35,6 @@ const AppNavigator: React.FC = () => {
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(_user => {
-      console.log('usuario: ', _user);
       setLoggedIn(_user);
       if (initializing) {
         setInitializing(false);
@@ -47,7 +46,6 @@ const AppNavigator: React.FC = () => {
 
   if (initializing) {
     return (
-      // eslint-disable-next-line react-native/no-inline-styles
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size={'large'} />
       </View>

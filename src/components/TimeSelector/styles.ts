@@ -9,8 +9,7 @@ export const Container = styled.ScrollView``;
 
 export const DaysContainer = styled.TouchableOpacity<Props>`
   width: 78px;
-  /* padding: 10px; */
-  height: 37px;
+  padding: 12px;
   border-radius: 13px;
   background: ${({active}) => (active ? '#D0D4BC' : '#f8fce1')};
   margin: 0 12px 0 0;

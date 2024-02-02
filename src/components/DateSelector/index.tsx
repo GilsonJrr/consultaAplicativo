@@ -1,8 +1,10 @@
 import React, {FC, useState} from 'react';
+import {FlatList, ListRenderItem, Text} from 'react-native';
+
+import moment from 'moment';
 
 import * as Styled from './styles';
-import {Text} from 'react-native';
-import moment from 'moment';
+import {dateArrayGenerator} from '../../utils';
 
 type MassageCardProps = {
   initialDate: Date;
@@ -16,24 +18,17 @@ const DateSelector: FC<MassageCardProps> = ({
   selectedDate,
 }) => {
   const [chooseDate, setChooseDate] = useState(initialDate);
+  const dateArray = dateArrayGenerator(initialDate, FinalDate);
 
-  const dates = (initDate: Date, FinDate: Date) => {
-    let inicio = new Date(initDate);
-    let fim = new Date(FinDate);
-
-    if (inicio > fim) {
-      console.error('Data de início deve ser anterior à data de fim');
-      return [];
-    }
-
-    let arrayDeDatas = [];
-
-    while (inicio <= fim) {
-      arrayDeDatas.push(new Date(inicio));
-      inicio.setDate(inicio.getDate() + 1);
-    }
-
-    return arrayDeDatas;
+  const renderItem: ListRenderItem<Date> = ({item}) => {
+    return (
+      <Styled.DaysContainer
+        onPress={() => handleSelectedDate(item)}
+        active={chooseDate.getDate() === item.getDate()}>
+        <Text>{moment(item).locale('pt-br').format('DD')}</Text>
+        <Text>{moment(item).locale('pt-br').format('MMM')}</Text>
+      </Styled.DaysContainer>
+    );
   };
 
   const handleSelectedDate = (date: Date) => {
@@ -42,18 +37,13 @@ const DateSelector: FC<MassageCardProps> = ({
   };
 
   return (
-    <Styled.Container horizontal showsHorizontalScrollIndicator={false}>
-      {dates(initialDate, FinalDate).map(date => {
-        return (
-          <Styled.DaysContainer
-            onPress={() => handleSelectedDate(date)}
-            active={chooseDate.getDate() === date.getDate()}>
-            <Text>{moment(date).locale('pt-br').format('DD')}</Text>
-            <Text>{moment(date).locale('pt-br').format('MMM')}</Text>
-          </Styled.DaysContainer>
-        );
-      })}
-    </Styled.Container>
+    <FlatList
+      showsHorizontalScrollIndicator={false}
+      horizontal
+      data={dateArray}
+      renderItem={renderItem}
+      keyExtractor={item => item.toDateString()}
+    />
   );
 };
 

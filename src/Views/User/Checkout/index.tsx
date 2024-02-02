@@ -60,7 +60,11 @@ const Checkout: FC<ModalProps> = ({route}) => {
 
   return (
     <Styled.Container>
-      <StatusBar backgroundColor="#FCFEF2" />
+      <StatusBar
+        animated={true}
+        backgroundColor="#fcfef2"
+        barStyle="dark-content"
+      />
       <Styled.GoBackButton onPress={() => navigation.goBack()}>
         <Icon name="chevron-left" size={30} color="#566246" />
       </Styled.GoBackButton>

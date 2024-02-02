@@ -2,17 +2,10 @@ import React, {
   Fragment,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useState,
 } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ListRenderItem,
-  StatusBar,
-  View,
-} from 'react-native';
+import {FlatList, ListRenderItem, StatusBar} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
@@ -20,16 +13,17 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {massotherapy, aesthetics, TServices} from '../../../data/massages';
 import {NavigationType} from '../../../Routes/types';
-import {TAgenda} from '../Profile';
-import {TUseData} from '../Profile';
 import useKeyboardVisibility from '../../../hooks/useKeyboardVisibility';
 
 import MassageCard from '../../../components/MassageCard';
 import Tabs from '../../../components/Tabs';
 import Toast from '../../../components/Toast';
 import * as Styled from './styles';
-import {loadAsyncData} from '../../../utils/asyncStorage';
-import {getFirebaseValue} from '../../../utils/fireBaseRequest';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../store/root-reducer';
+import {requestUserAgenda} from '../../../store/agenda/actions';
+import {requestUser} from '../../../store/user/actions';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 const TABS = [
   {label: 'Massoterapia', value: 'Massoterapia'},
@@ -37,16 +31,23 @@ const TABS = [
 ];
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const {uid, isLoading} = useSelector((state: RootState) => state.authReducer);
+  const {agenda, isLoading: agendaLoading} = useSelector(
+    (state: RootState) => state.agendaReducer,
+  );
+  const {user, isLoading: userLoading} = useSelector(
+    (state: RootState) => state.userReducer,
+  );
+
+  console.log('user aqui dentro :', user);
+
   const navigation = useNavigation<NavigationType>();
   const isKeyboardVisible = useKeyboardVisibility();
 
-  const [userUid, setUserUid] = useState();
   const [search, setSearch] = useState('');
   const [tab, setTab] = useState('Massoterapia');
-  const [userData, setUserData] = useState<TUseData>();
-  const [agenda, setAgenda] = useState<TAgenda[]>();
   const [triggerToast, setTriggerToast] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const filteredMassages = massotherapy.filter(a =>
     a.title.toUpperCase().includes(search.toUpperCase()),
@@ -81,29 +82,17 @@ const Home = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getFirebaseValue(`users/${userUid}`, setUserData);
-      getFirebaseValue(`agenda/${userUid}`, setAgenda);
-    }, [userUid]),
+      dispatch(requestUser({uid: uid || ''}));
+      dispatch(requestUserAgenda({uid: uid || ''}));
+    }, [dispatch, uid]),
   );
 
   useEffect(() => {
-    loadAsyncData('userUid', setUserUid);
-  }, []);
+    user?.firstLogIn && navigation.navigate('ProfileEdit');
+  }, [user, navigation]);
 
-  useLayoutEffect(() => {
-    if (userData) {
-      setLoading(false);
-      userData.firstLogIn && navigation.navigate('ProfileEdit');
-    }
-  }, [navigation, userData]);
-
-  if (loading) {
-    return (
-      // eslint-disable-next-line react-native/no-inline-styles, react/jsx-no-undef
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size={'large'} />
-      </View>
-    );
+  if (isLoading || agendaLoading || userLoading) {
+    return <LoadingSpinner />;
   }
 
   return (
@@ -124,7 +113,7 @@ const Home = () => {
               />
             </Styled.AlertContainer>
 
-            <Styled.UserName>Olá, {userData?.name}</Styled.UserName>
+            <Styled.UserName>Olá, {user?.name}</Styled.UserName>
             <Styled.Greetings>Escolha uma das nossos opções!</Styled.Greetings>
           </Fragment>
         )}
