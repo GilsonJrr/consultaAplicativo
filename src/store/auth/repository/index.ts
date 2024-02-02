@@ -8,7 +8,6 @@ export const signUpWithEmailPasswordFirebase = async (
     .createUserWithEmailAndPassword(email, password)
     .then(user => user)
     .catch(error => {
-      console.log(error.code);
       if (error.code === 'auth/wrong-password') {
         console.log('Senha icorreta');
       }

@@ -57,16 +57,6 @@ export const SearchContainer = styled.View`
   align-items: center;
 `;
 
-export const SearchInput = styled.TextInput`
-  width: 100%;
-  height: 39px;
-  flex-shrink: 0;
-  border-radius: 20px;
-  background: #fff;
-  padding: 0 0 0 10px;
-  margin-top: 20px;
-`;
-
 export const MassagesContainer = styled.ScrollView`
   margin: 20px 0 0 0;
   width: 100%;

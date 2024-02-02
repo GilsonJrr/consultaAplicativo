@@ -19,7 +19,6 @@ export function* requestUserSaga(props: UserAction<UserRequest>): any {
   try {
     if (uid) {
       const userAgendaResponses = yield call(getUser, uid);
-      console.log('user aqui : ', userAgendaResponses);
       yield put(user(userAgendaResponses));
     }
   } catch (err: any) {

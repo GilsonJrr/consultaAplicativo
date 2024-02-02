@@ -1,8 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
 import * as Styled from './styles';
 import ProfilePagesLayout from '../../../../layouts/ProfilePages';
 import DropDown from '../../../../components/DropDown';
@@ -13,6 +11,8 @@ import {requestUser, setUser} from '../../../../store/user/actions';
 import LoadingSpinner from '../../../../components/LoadingSpinner';
 import {UseData} from '../../../../store/user/types';
 import {StatusBar} from 'react-native';
+import Input from '../../../../components/Input';
+import InputMask from '../../../../components/InputMask';
 
 const ProfileEdit = () => {
   const dispatch = useDispatch();
@@ -90,32 +90,46 @@ const ProfileEdit = () => {
             Seja bem vindo pra continuar porfavor complete seu cadastro
           </Styled.FirstLoginMessage>
         )}
-        <Styled.InputWarper active>
-          <Icon name="person" size={20} color="#566246" />
-          <Styled.SimpleInput
-            value={name}
-            onChangeText={setName}
-            placeholder={'Seu nome aqui'}
-          />
-        </Styled.InputWarper>
+        <Input
+          iconName="person"
+          iconSide="left"
+          iconSize={20}
+          iconColor="#566246"
+          value={name}
+          onChangeText={setName}
+          placeholder={'Seu nome aqui'}
+          margin="0 0 10px 0"
+          size="medium"
+        />
 
-        <Styled.InputWarper active>
-          <Icon name="event" size={20} color="#566246" />
-          <Styled.SimpleInput
-            value={birthDate}
-            onChangeText={setBirthDate}
-            placeholder="01/01/2000"
-          />
-        </Styled.InputWarper>
+        <InputMask
+          iconName="event"
+          iconSide="left"
+          iconSize={20}
+          iconColor="#566246"
+          value={birthDate}
+          onChangeText={setBirthDate}
+          placeholder="01/01/2000"
+          margin="0 0 10px 0"
+          size="medium"
+          type={'datetime'}
+          options={{
+            format: 'MM/DD/YYYY',
+          }}
+        />
 
-        <Styled.InputWarper active>
-          <Icon name="call" size={20} color="#566246" />
-          <Styled.SimpleInput
-            value={phone}
-            onChangeText={setPhone}
-            placeholder="(88) 8 8888-8888"
-          />
-        </Styled.InputWarper>
+        <InputMask
+          iconName="call"
+          iconSide="left"
+          iconSize={20}
+          iconColor="#566246"
+          value={phone}
+          onChangeText={setPhone}
+          placeholder="(88) 8 8888-8888"
+          margin="0 0 10px 0"
+          size="medium"
+          type="cel-phone"
+        />
 
         <DropDown
           icon="radio-button-unchecked"
@@ -130,13 +144,16 @@ const ProfileEdit = () => {
         />
 
         <Styled.Label>Observação</Styled.Label>
-        <Styled.Input
+        <Input
+          iconColor="#566246"
           value={observation}
           onChangeText={setObservation}
           multiline
           textAlignVertical="top"
-          numberOfLines={100}
+          numberOfLines={6}
           placeholder="EX: Possuo dores fortes nas costas"
+          margin="0 0 10px 0"
+          size="medium"
         />
       </Styled.InputContainer>
     </ProfilePagesLayout>

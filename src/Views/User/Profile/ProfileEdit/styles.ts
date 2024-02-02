@@ -144,12 +144,6 @@ export const InputWarper = styled.View<Props>`
   transition: all 0.3s ease-in-out;
 `;
 
-export const SimpleInput = styled.TextInput`
-  font-size: 20px;
-  width: 100%;
-  color: #566246;
-`;
-
 export const Label = styled.Text`
   color: #566246;
   font-family: Inter;

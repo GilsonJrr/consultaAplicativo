@@ -11,6 +11,7 @@ import {requestUser, setUserFeedback} from '../../../../store/user/actions';
 import {RootState} from '../../../../store/root-reducer';
 import LoadingSpinner from '../../../../components/LoadingSpinner';
 import {StatusBar} from 'react-native';
+import Input from '../../../../components/Input';
 
 const TalkToUs = () => {
   const dispatch = useDispatch();
@@ -67,12 +68,12 @@ const TalkToUs = () => {
         />
 
         <Styled.Label>Sua mensagem</Styled.Label>
-        <Styled.Input
+        <Input
           value={subject}
           onChangeText={setSubject}
           multiline
           textAlignVertical="top"
-          numberOfLines={100}
+          numberOfLines={10}
           placeholder="Fale sobre sua experiencia sobre o assunto selecionado"
         />
       </Styled.InputContainer>

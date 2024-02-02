@@ -11,7 +11,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {massotherapy, aesthetics, TServices} from '../../../data/massages';
 import {NavigationType} from '../../../Routes/types';
 import useKeyboardVisibility from '../../../hooks/useKeyboardVisibility';
 
@@ -24,6 +23,9 @@ import {RootState} from '../../../store/root-reducer';
 import {requestUserAgenda} from '../../../store/agenda/actions';
 import {requestUser} from '../../../store/user/actions';
 import LoadingSpinner from '../../../components/LoadingSpinner';
+import Input from '../../../components/Input';
+import {requestServices} from '../../../store/services/actions';
+import {ServiceData} from '../../../store/services/types';
 
 const TABS = [
   {label: 'Massoterapia', value: 'Massoterapia'},
@@ -39,8 +41,11 @@ const Home = () => {
   const {user, isLoading: userLoading} = useSelector(
     (state: RootState) => state.userReducer,
   );
-
-  console.log('user aqui dentro :', user);
+  const {
+    massotherapyServices,
+    aestheticsServices,
+    isLoading: servicesLoading,
+  } = useSelector((state: RootState) => state.servicesReducer);
 
   const navigation = useNavigation<NavigationType>();
   const isKeyboardVisible = useKeyboardVisibility();
@@ -49,11 +54,11 @@ const Home = () => {
   const [tab, setTab] = useState('Massoterapia');
   const [triggerToast, setTriggerToast] = useState(false);
 
-  const filteredMassages = massotherapy.filter(a =>
+  const filteredMassages = Object.values(massotherapyServices || []).filter(a =>
     a.title.toUpperCase().includes(search.toUpperCase()),
   );
 
-  const filteredAesthetics = aesthetics.filter(a =>
+  const filteredAesthetics = Object.values(aestheticsServices || []).filter(a =>
     a.title.toUpperCase().includes(search.toUpperCase()),
   );
 
@@ -67,7 +72,7 @@ const Home = () => {
     }
   }, [agenda]);
 
-  const renderItem: ListRenderItem<TServices> = ({item}) => {
+  const renderItem: ListRenderItem<ServiceData> = ({item}) => {
     return (
       <MassageCard
         data={item}
@@ -84,6 +89,7 @@ const Home = () => {
     useCallback(() => {
       dispatch(requestUser({uid: uid || ''}));
       dispatch(requestUserAgenda({uid: uid || ''}));
+      dispatch(requestServices());
     }, [dispatch, uid]),
   );
 
@@ -91,7 +97,7 @@ const Home = () => {
     user?.firstLogIn && navigation.navigate('ProfileEdit');
   }, [user, navigation]);
 
-  if (isLoading || agendaLoading || userLoading) {
+  if (isLoading || agendaLoading || userLoading || servicesLoading) {
     return <LoadingSpinner />;
   }
 
@@ -117,10 +123,12 @@ const Home = () => {
             <Styled.Greetings>Escolha uma das nossos opções!</Styled.Greetings>
           </Fragment>
         )}
-        <Styled.SearchInput
+        <Input
           value={search}
           placeholder="Procure um tipo de massagem"
           onChangeText={setSearch}
+          margin="20px 0 0 0"
+          borderType="round"
         />
       </Styled.WelcomeHeader>
       <Styled.Warper>
@@ -130,6 +138,7 @@ const Home = () => {
           data={tab === 'Massoterapia' ? filteredMassages : filteredAesthetics}
           renderItem={renderItem}
           contentContainerStyle={{paddingBottom: 450, paddingTop: 20}}
+          keyExtractor={data => data.uid}
         />
       </Styled.Warper>
       <Toast

@@ -4,12 +4,14 @@ import {useNavigation} from '@react-navigation/native';
 import {NavigationType} from '../../../Routes/types';
 import {useDispatch} from 'react-redux';
 import {requestSignInEmailPassword} from '../../../store/auth/actions';
+import Input from '../../../components/Input';
 
 const Login: FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationType>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
+  const [showPassword, setShowPassword] = useState(false);
 
   const signIn = () => {
     if (email && password) {
@@ -25,9 +27,22 @@ const Login: FC = () => {
       <Styled.Text>Vamos la!</Styled.Text>
       <Styled.ContentScroll>
         <Styled.Text>e-mail</Styled.Text>
-        <Styled.Input value={email} onChangeText={setEmail} />
+        <Input
+          value={email}
+          onChangeText={setEmail}
+          borderType="round"
+          margin="0 0 10px 0"
+        />
         <Styled.Text>senha</Styled.Text>
-        <Styled.Input value={password} onChangeText={setPassword} />
+        <Input
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+          borderType="round"
+          iconName={showPassword ? 'visibility' : 'visibility-off'}
+          iconSide="right"
+          onClick={() => setShowPassword(prev => !prev)}
+        />
         <Styled.AlreadyRegisteredContainer>
           <Styled.AlreadyRegistered>
             Ainda nao tem uma conta ?

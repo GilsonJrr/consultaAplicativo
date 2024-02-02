@@ -116,17 +116,6 @@ export const InputContainer = styled.ScrollView`
   width: 100%;
 `;
 
-export const Input = styled.TextInput`
-  width: 100%;
-  height: 200px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: #fff;
-  padding: 10px;
-  margin: 0 0 10px 0;
-  border: 1px solid #566246;
-`;
-
 export const InputWarper = styled.View<Props>`
   width: 100%;
   flex-shrink: 0;
