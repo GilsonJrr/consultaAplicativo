@@ -4,12 +4,8 @@ export const Container = styled.View`
   border-radius: 12px;
   border: 3px solid #566246;
   background: #fcfef2;
-  width: 100%;
-  margin: 0 5%;
+  width: 90%;
   padding: 12px 22px 22px;
-  position: absolute;
-  top: 10px;
-  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;

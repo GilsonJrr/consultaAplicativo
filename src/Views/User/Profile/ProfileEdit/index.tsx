@@ -13,6 +13,7 @@ import {UseData} from '../../../../store/user/types';
 import {StatusBar} from 'react-native';
 import Input from '../../../../components/Input';
 import InputMask from '../../../../components/InputMask';
+import Toast from 'react-native-toast-message';
 
 const ProfileEdit = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,19 @@ const ProfileEdit = () => {
     };
     dispatch(setUser(updatedUserData));
     navigation.goBack();
+    showToast();
+  };
+
+  const showToast = () => {
+    Toast.show({
+      visibilityTime: 5000,
+      type: 'successToast',
+      text1: 'Maravilha',
+      text2: `Seus dados foram ${
+        user?.firstLogIn ? 'salvos' : 'atualizados'
+      } com sucesso`,
+      swipeable: true,
+    });
   };
 
   const disableButton = useMemo(() => {

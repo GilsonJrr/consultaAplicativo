@@ -12,6 +12,7 @@ import {RootState} from '../../../../store/root-reducer';
 import LoadingSpinner from '../../../../components/LoadingSpinner';
 import {StatusBar} from 'react-native';
 import Input from '../../../../components/Input';
+import Toast from 'react-native-toast-message';
 
 const TalkToUs = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,17 @@ const TalkToUs = () => {
     }, [dispatch, uid]),
   );
 
+  const showToast = () => {
+    Toast.show({
+      visibilityTime: 5000,
+      type: 'successToast',
+      text1: 'Muito Obrigado',
+      text2:
+        'Seu FeedBack e muito importante para desemvolver nosso atendimento',
+      swipeable: true,
+    });
+  };
+
   const sendEmail = async () => {
     const feedbackdata = {
       uid: user?.uid || '',
@@ -39,6 +51,7 @@ const TalkToUs = () => {
     };
     dispatch(setUserFeedback(feedbackdata));
     navigation.goBack();
+    showToast();
   };
 
   if (isLoading || userLoading) {

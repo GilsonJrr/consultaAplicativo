@@ -16,7 +16,7 @@ import useKeyboardVisibility from '../../../hooks/useKeyboardVisibility';
 
 import MassageCard from '../../../components/MassageCard';
 import Tabs from '../../../components/Tabs';
-import Toast from '../../../components/Toast';
+// import Toast from '../../../components/Toast';
 import * as Styled from './styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../store/root-reducer';
@@ -26,6 +26,8 @@ import LoadingSpinner from '../../../components/LoadingSpinner';
 import Input from '../../../components/Input';
 import {requestServices} from '../../../store/services/actions';
 import {ServiceData} from '../../../store/services/types';
+import Toast from 'react-native-toast-message';
+import moment from 'moment';
 
 const TABS = [
   {label: 'Massoterapia', value: 'Massoterapia'},
@@ -52,7 +54,6 @@ const Home = () => {
 
   const [search, setSearch] = useState('');
   const [tab, setTab] = useState('Massoterapia');
-  const [triggerToast, setTriggerToast] = useState(false);
 
   const filteredMassages = Object.values(massotherapyServices || []).filter(a =>
     a.title.toUpperCase().includes(search.toUpperCase()),
@@ -65,7 +66,10 @@ const Home = () => {
   const anointmentToday = useMemo(() => {
     if (agenda) {
       return Object.values(agenda)?.filter(data => {
-        return new Date(data.dateUtc) > new Date() && !data.pendent;
+        return (
+          moment(new Date(data.dateUtc)).format('DD/MM') ===
+            moment(new Date()).format('DD/MM') && !data.pendent
+        );
       });
     } else {
       return [];
@@ -83,6 +87,18 @@ const Home = () => {
         }}
       />
     );
+  };
+
+  const showToast = () => {
+    Toast.show({
+      visibilityTime: 5000,
+      type: 'alertToast',
+      text1: 'Aviso',
+      text2: `Lembre-se Hoje você tem um encontro conosco as ${moment(
+        anointmentToday[0]?.dateUtc,
+      ).format('HH:mm')}`,
+      swipeable: true,
+    });
   };
 
   useFocusEffect(
@@ -108,9 +124,7 @@ const Home = () => {
         {!isKeyboardVisible && (
           <Fragment>
             <Styled.AlertContainer
-              onPress={() =>
-                anointmentToday?.length > 0 && setTriggerToast(true)
-              }>
+              onPress={() => anointmentToday?.length > 0 && showToast()}>
               {anointmentToday?.length > 0 && <Styled.AlertSign />}
               <Icon
                 name="notifications"
@@ -141,13 +155,13 @@ const Home = () => {
           keyExtractor={data => data.uid}
         />
       </Styled.Warper>
-      <Toast
+      {/* <Toast
         timeOut={5000}
         displayToast={triggerToast}
         hideToast={() => setTriggerToast(false)}
         title={'Aviso'}
         description={`Lembre-se Hoje você tem um encontro conosco as ${anointmentToday[0]?.dateUtc}`}
-      />
+      /> */}
     </SafeAreaView>
   );
 };
